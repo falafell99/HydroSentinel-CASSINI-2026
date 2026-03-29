@@ -96,13 +96,14 @@ pip install -r requirements.txt
 # Launch the interactive Dashboard
 streamlit run web/app.py
 👥 The Crew
-[Your Name] — Tech Lead | Full-stack & GIS Data Pipelines
 
-[Teammate Name] — Space Specialist | SAR Image Processing & ESA Toolboxes
+Rafael — Lead Systems Architect & Full-Stack Developer
 
-[Teammate Name] — Product/Business | Market Analysis & UX Strategy
+Jaloliddin Ismailov - Chief Environmental Engineer & Security Analyst
 
-[Teammate Name] — Creative/Pitch | Presentation & Narrative Design
+Nursultan Tuleev — AI & Geospatial Intelligence Lead
+
+
 
 📜 License & Acknowledgements
 Developed specifically for the 11th CASSINI Hackathon 2026. This project utilizes data provided by the European Union’s Copernicus and Galileo programs.
