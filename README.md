@@ -1,88 +1,132 @@
-# HydroSentinel-CASSINI-2026
-This is a professional, high-impact README.md template designed specifically for the CASSINI Hackathon 2026. It is structured to hit all three judging criteria (Relevance, Innovation, Team) the moment a judge opens your repository.
+# 🛰️ HydroSentinel: AI-Driven Flood Intelligence
+### *11th CASSINI Hackathon 2026 | Challenge: Disaster Risk Management*
 
-🛰️ HydroSentinel: AI-Driven Flood Intelligence
-11th CASSINI Hackathon 2026 | Challenge: Disaster Risk Management
+---
 
-"Transforming Space Data into Life-Saving Minutes." > HydroSentinel is a real-time flood monitoring and emergency response platform that leverages Copernicus Sentinel-1 SAR imagery and Galileo High-Accuracy Positioning to detect flash floods through cloud cover and coordinate precision rescue efforts.
+> **"Transforming Space Data into Life-Saving Minutes."**
+> 
+> HydroSentinel is a real-time flood monitoring and emergency response platform. By fusing **Copernicus Sentinel-1 SAR** imagery with **Galileo High-Accuracy Positioning**, we detect flash floods through cloud cover and coordinate precision rescue efforts in environments where standard GPS fails.
 
-🌊 1. The Problem
-Traditional flood monitoring relies on optical satellites (blocked by storm clouds) or ground sensors (often destroyed by water).
+---
 
-The Gap: During peak disaster moments, "blind spots" lead to delayed evacuations.
+## 🚩 The Problem
+Traditional flood monitoring is often "blind" during the most critical moments:
+* **The Cloud Gap:** Optical satellites (like Sentinel-2) cannot see through the storm clouds that cause the floods.
+* **The Accuracy Gap:** Standard GPS has an error margin of 5-10m, which is life-threatening when navigating submerged urban streets or narrow channels.
+* **The Action Gap:** Raw data is hard to read. First responders need clear, natural-language instructions, not just "heatmaps."
 
-The Impact: Every 10-minute delay in flood warning increases property damage by 15% and significantly raises mortality rates.
+---
 
-🚀 2. Our Space-Powered Solution
-HydroSentinel provides a "Dual-Space" approach to solve the water crisis:
+## 🚀 Our Space-Powered Solution
 
-A. The Eyes: Copernicus Sentinel-1
+We leverage the full European Space Ecosystem to create a closed-loop emergency system:
 
-We utilize Synthetic Aperture Radar (SAR) data. Unlike standard photography, SAR penetrates clouds and smoke. We use an automated Change Detection Algorithm to compare "Golden Land" (dry) vs. "Current Pass" (wet) to map flood polygons in near-real-time.
+### 🛰️ The Eyes: Copernicus Sentinel-1
+We use **Synthetic Aperture Radar (SAR)**. SAR pulses microwave signals that bounce off the earth and penetrate clouds, smoke, and darkness. 
+* **Change Detection:** Our algorithm compares "Golden Land" (baseline) vs. "Current Pass" (flood) to isolate water polygons automatically.
 
-B. The Pulse: Galileo & EGNOS
+### 📍 The Pulse: Galileo & EGNOS
+Precision is not a luxury; it's a requirement for rescue.
+* **Galileo HAS:** We utilize the **High Accuracy Service** to provide sub-meter precision for rescue drones and ground teams.
+* **EGNOS:** Ensures signal integrity, crucial for autonomous emergency vehicles navigating debris.
 
-During rescue operations, standard GPS has a 5-10m error margin—dangerous in submerged urban areas.
+---
 
-We integrate the Galileo High Accuracy Service (HAS) to provide sub-meter precision for rescue drones and ground teams.
+## ✨ Key Features
 
-EGNOS is utilized to ensure "Integrity of Signal" for autonomous emergency boats navigating debris-filled waters.
+* **☁️ Cloud-Proof Mapping:** Near-real-time flood polygons generated from SAR backscatter analysis.
+* **🚑 Precision Dispatch:** Galileo-enabled pathfinding that avoids submerged power lines and deep-water "trap zones."
+* **🤖 AI Dispatcher:** Integrates **Google Gemini 1.5 Pro** to turn raw GIS data into localized, multi-lingual SMS alerts for residents.
+* **📊 Predictive Risk Score:** Combines Sentinel-3 soil moisture data with weather APIs to predict "First-to-Flood" zones 6 hours in advance.
 
-✨ 3. Key Features
-Cloud-Proof Mapping: Automated flood detection using SAR backscatter analysis.
+---
 
-Precision Dispatch: Galileo-enabled "Rescue Pathfinding" to avoid submerged power lines and deep-water zones.
+## 🛠️ Technical Implementation
 
-AI Dispatcher: Uses Gemini 1.5 Pro to turn raw satellite data into localized, multi-lingual SMS alerts (e.g., "Water rising 20cm/hr on Oak Street. Evacuate to Sector 4.")
+### **The Tech Stack**
+| Category | Technology |
+| :--- | :--- |
+| **Space Data** | Copernicus Sentinel-1, Sentinel-3, Galileo HAS |
+| **Backend** | Python 3.12, FastAPI, PostgreSQL + PostGIS |
+| **AI/ML** | PyTorch (U-Net for segmentation), Gemini API |
+| **Geospatial** | GeoPandas, Rasterio, Sentinel-Hub API, Mapbox |
 
-Predictive Risk Score: Combines Sentinel-3 soil moisture data with weather forecasts to predict floods before they happen.
+### **Project Architecture**
+1.  **Ingestion:** Automated fetching of Sentinel-1 `.SAFE` products via Copernicus Data Space.
+2.  **Processing:** SAR Speckle filtering + Binarization in Python.
+3.  **Inference:** AI model identifies flooded building footprints via OpenStreetMap (OSM) overlay.
+4.  **Delivery:** Live Mapbox Dashboard + Twilio SMS Alerting.
 
-🛠️ 4. Tech Stack
-Category	Technology
-Space Data	Copernicus Sentinel-1 (SAR), Sentinel-3 (SLSTR), Galileo HAS
-Backend	Python 3.12, FastAPI, PostgreSQL + PostGIS
-AI/ML	PyTorch (U-Net for segmentation), Google Gemini API
-Geospatial	GeoPandas, Rasterio, Sentinel-Hub API, Mapbox GL JS
-Deployment	Docker, Streamlit (for the Dashboard)
-📂 5. Repository Structure
-Plaintext
+---
+
+## 📂 Repository Structure
+
+```text
 ├── data/                  # Sample GeoJSONs (Flood polygons)
-├── notebooks/             # Data Science & SAR processing experiments
+├── notebooks/             # SAR processing & AI training experiments
 ├── src/
 │   ├── processor.py       # The "Brain": SAR Change Detection logic
 │   ├── galileo_sync.py    # Galileo HAS coordinate correction module
-│   └── alerts.py          # LLM-based emergency message generator
-├── web/                   # Streamlit/React Dashboard
+│   └── alerts.py          # Gemini-powered emergency message generator
+├── web/                   # Streamlit Dashboard UI
+├── requirements.txt       # Python dependencies
 └── README.md              # You are here!
-⚡ 6. Getting Started (For Judges & Devs)
-Prerequisites
+⚡ Quick Start
+1. Prerequisites
 
-A Copernicus Data Space account.
+Create an account at Copernicus Data Space Ecosystem.
 
-A Mapbox API Token.
+Obtain a Mapbox API Token.
 
-Installation
-
-Clone the repo:
+2. Installation
 
 Bash
-git clone https://github.com/yourteam/HydroSentinel.git
-Install Dependencies:
+# Clone the repository
+git clone [https://github.com/yourteam/HydroSentinel.git](https://github.com/yourteam/HydroSentinel.git)
 
-Bash
+# Move into the directory
+cd HydroSentinel
+
+# Install the geospatial stack
 pip install -r requirements.txt
-Run the Dashboard:
 
-Bash
+# Launch the Dashboard
 streamlit run web/app.py
-👥 7. The Team
-[Name] (Tech Lead): Full-stack dev & Satellite data pipeline expert.
+👥 The Crew
+[Name] - Tech Lead | Full-stack & GIS Data Pipelines
 
-[Name] (Space Specialist): GIS expert focused on Sentinel-1 SAR processing.
+[Name] - Space Specialist | SAR Image Processing & ESA Toolbox
 
-[Name] (Business/Product): Market analysis & Disaster management workflow.
+[Name] - Product/Business | Market Analysis & UX Strategy
 
-[Name] (Creative/Pitch): UI/UX Design & Presentation storytelling.
+[Name] - Creative/Pitch | Presentation & Narrative Design
 
-📜 8. License & Acknowledgements
-This project was developed during the 11th CASSINI Hackathon. Special thanks to the EUSPA and European Commission for providing access to the Copernicus and Galileo ecosystems.
+📜 License & Acknowledgements
+Developed for the 11th CASSINI Hackathon 2026. This project uses data provided by the European Union’s Copernicus and Galileo programs.
+
+
+---
+
+### **Bonus: Your `requirements.txt` file**
+Since you are working with satellite data, you need very specific libraries. Create a file named `requirements.txt` and paste this:
+
+```text
+# Core Data Science
+numpy==1.26.4
+pandas==2.2.0
+geopandas==0.14.3
+
+# Satellite & GIS
+rasterio==1.3.9
+shapely==2.0.3
+sentinelsat==1.2.1
+folium==0.15.1
+
+# AI & Backend
+fastapi==0.109.2
+uvicorn==0.27.1
+google-generativeai==0.4.0
+torch==2.2.0
+
+# Frontend
+streamlit==1.31.1
