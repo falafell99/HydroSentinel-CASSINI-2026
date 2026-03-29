@@ -97,7 +97,7 @@ pip install -r requirements.txt
 streamlit run web/app.py
 👥 The Crew
 
-Rafael — Lead Systems Architect & Full-Stack Developer
+Rafael Ibayev — Lead Systems Architect & Full-Stack Developer
 
 Jaloliddin Ismailov - Chief Environmental Engineer & Security Analyst
 
