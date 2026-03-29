@@ -5,39 +5,39 @@
 
 > **"Transforming Space Data into Life-Saving Minutes."**
 > 
-> HydroSentinel is a real-time flood monitoring and emergency response platform. By fusing **Copernicus Sentinel-1 SAR** imagery with **Galileo High-Accuracy Positioning**, we detect flash floods through cloud cover and coordinate precision rescue efforts in environments where standard GPS fails.
+> HydroSentinel — это платформа для мониторинга наводнений и координации экстренных служб в реальном времени. Мы объединяем данные радаров **Copernicus Sentinel-1** с высокоточным позиционированием **Galileo**, чтобы обнаруживать паводки сквозь облака и координировать спасательные операции там, где обычный GPS дает сбои.
 
 ---
 
 ## 🚩 The Problem
-Traditional flood monitoring is often "blind" during the most critical moments:
-* **The Cloud Gap:** Optical satellites (like Sentinel-2) cannot see through the storm clouds that cause the floods.
-* **The Accuracy Gap:** Standard GPS has an error margin of 5-10m, which is life-threatening when navigating submerged urban streets or narrow channels.
-* **The Action Gap:** Raw data is hard to read. First responders need clear, natural-language instructions, not just "heatmaps."
+Традиционный мониторинг наводнений часто «слеп» в самые критические моменты:
+* **Проблема облачности:** Оптические спутники не видят сквозь штормовые тучи, которые и вызывают наводнения.
+* **Точность позиционирования:** Обычный GPS имеет погрешность 5–10 метров, что опасно при навигации по затопленным городским улицам.
+* **Скорость оповещения:** Сырые данные сложны для понимания. Спасателям нужны четкие инструкции на естественном языке, а не просто «тепловые карты».
 
 ---
 
-## 🚀 Our Space-Powered Solution
+## 🚀 Space-Powered Solution
 
-We leverage the full European Space Ecosystem to create a closed-loop emergency system:
+Мы используем европейскую космическую экосистему для создания замкнутого цикла экстренного реагирования:
 
 ### 🛰️ The Eyes: Copernicus Sentinel-1
-We use **Synthetic Aperture Radar (SAR)**. SAR pulses microwave signals that bounce off the earth and penetrate clouds, smoke, and darkness. 
-* **Change Detection:** Our algorithm compares "Golden Land" (baseline) vs. "Current Pass" (flood) to isolate water polygons automatically.
+Мы используем данные **Radar (SAR)**. Радарные сигналы проникают сквозь облака, дым и темноту. 
+* **Change Detection:** Наш алгоритм сравнивает «базовое» состояние земли с текущим снимком, автоматически выделяя полигоны затопления.
 
 ### 📍 The Pulse: Galileo & EGNOS
-Precision is not a luxury; it's a requirement for rescue.
-* **Galileo HAS:** We utilize the **High Accuracy Service** to provide sub-meter precision for rescue drones and ground teams.
-* **EGNOS:** Ensures signal integrity, crucial for autonomous emergency vehicles navigating debris.
+Точность — это не роскошь, а необходимость для спасения жизней.
+* **Galileo HAS:** Мы используем сервис высокой точности (**High Accuracy Service**) для обеспечения субметровой погрешности для спасательных дронов и наземных групп.
+* **EGNOS:** Гарантирует целостность сигнала, что критически важно для автономных спасательных средств.
 
 ---
 
 ## ✨ Key Features
 
-* **☁️ Cloud-Proof Mapping:** Near-real-time flood polygons generated from SAR backscatter analysis.
-* **🚑 Precision Dispatch:** Galileo-enabled pathfinding that avoids submerged power lines and deep-water "trap zones."
-* **🤖 AI Dispatcher:** Integrates **Google Gemini 1.5 Pro** to turn raw GIS data into localized, multi-lingual SMS alerts for residents.
-* **📊 Predictive Risk Score:** Combines Sentinel-3 soil moisture data with weather APIs to predict "First-to-Flood" zones 6 hours in advance.
+* **☁️ Cloud-Proof Mapping:** Генерация карт затопления в реальном времени на основе анализа обратного рассеяния SAR.
+* **🚑 Precision Dispatch:** Навигация на базе Galileo, позволяющая обходить затопленные линии электропередач и опасные глубоководные зоны.
+* **🤖 AI Dispatcher:** Интеграция **Google Gemini 1.5 Pro** для превращения сырых ГИС-данных в локализованные многоязычные SMS-оповещения для жителей.
+* **📊 Predictive Risk Score:** Объединение данных о влажности почвы со спутника Sentinel-3 с метеорологическими API для прогнозирования зон риска за 6 часов до начала затопления.
 
 ---
 
@@ -48,85 +48,68 @@ Precision is not a luxury; it's a requirement for rescue.
 | :--- | :--- |
 | **Space Data** | Copernicus Sentinel-1, Sentinel-3, Galileo HAS |
 | **Backend** | Python 3.12, FastAPI, PostgreSQL + PostGIS |
-| **AI/ML** | PyTorch (U-Net for segmentation), Gemini API |
+| **AI/ML** | PyTorch (U-Net segmentation), Gemini API |
 | **Geospatial** | GeoPandas, Rasterio, Sentinel-Hub API, Mapbox |
 
 ### **Project Architecture**
-1.  **Ingestion:** Automated fetching of Sentinel-1 `.SAFE` products via Copernicus Data Space.
-2.  **Processing:** SAR Speckle filtering + Binarization in Python.
-3.  **Inference:** AI model identifies flooded building footprints via OpenStreetMap (OSM) overlay.
-4.  **Delivery:** Live Mapbox Dashboard + Twilio SMS Alerting.
+1.  **Ingestion:** Автоматизированный сбор данных Sentinel-1 через Copernicus Data Space.
+2.  **Processing:** Фильтрация спекл-шумов SAR + бинаризация на Python.
+3.  **Inference:** Модель ИИ определяет затопленные здания через наложение данных OpenStreetMap (OSM).
+4.  **Delivery:** Интерактивный дашборд Mapbox + SMS-оповещения через Twilio.
 
 ---
 
 ## 📂 Repository Structure
 
 ```text
-├── data/                  # Sample GeoJSONs (Flood polygons)
-├── notebooks/             # SAR processing & AI training experiments
+├── data/                  # Образцы GeoJSON (полигоны затоплений)
+├── notebooks/             # Эксперименты по обработке SAR и обучению ИИ
 ├── src/
-│   ├── processor.py       # The "Brain": SAR Change Detection logic
-│   ├── galileo_sync.py    # Galileo HAS coordinate correction module
-│   └── alerts.py          # Gemini-powered emergency message generator
-├── web/                   # Streamlit Dashboard UI
-├── requirements.txt       # Python dependencies
-└── README.md              # You are here!
+│   ├── processor.py       # Логика обнаружения изменений SAR
+│   ├── galileo_sync.py    # Модуль коррекции координат Galileo HAS
+│   └── alerts.py          # Генератор экстренных сообщений на базе Gemini
+├── web/                   # Интерфейс дашборда на Streamlit
+├── requirements.txt       # Список зависимостей Python
+└── README.md              # Вы здесь!
 ⚡ Quick Start
 1. Prerequisites
 
-Create an account at Copernicus Data Space Ecosystem.
+Аккаунт в Copernicus Data Space Ecosystem.
 
-Obtain a Mapbox API Token.
+Токен Mapbox API.
 
 2. Installation
 
 Bash
-# Clone the repository
+# Клонировать репозиторий
 git clone [https://github.com/yourteam/HydroSentinel.git](https://github.com/yourteam/HydroSentinel.git)
 
-# Move into the directory
+# Перейти в директорию
 cd HydroSentinel
 
-# Install the geospatial stack
+# Установить зависимости
 pip install -r requirements.txt
 
-# Launch the Dashboard
+# Запустить дашборд
 streamlit run web/app.py
 👥 The Crew
-[Name] - Tech Lead | Full-stack & GIS Data Pipelines
+[Твое Имя] — Tech Lead | Full-stack & GIS Data Pipelines
 
-[Name] - Space Specialist | SAR Image Processing & ESA Toolbox
+[Имя Напарника] — Space Specialist | SAR Image Processing & ESA Toolbox
 
-[Name] - Product/Business | Market Analysis & UX Strategy
+[Имя Напарника] — Product/Business | Market Analysis & UX Strategy
 
-[Name] - Creative/Pitch | Presentation & Narrative Design
+[Имя Напарника] — Creative/Pitch | Presentation & Narrative Design
 
 📜 License & Acknowledgements
-Developed for the 11th CASSINI Hackathon 2026. This project uses data provided by the European Union’s Copernicus and Galileo programs.
+Разработано специально для 11th CASSINI Hackathon 2026. Проект использует данные, предоставленные программами Европейского Союза Copernicus и Galileo.
 
 
 ---
 
-### **Bonus: Your `requirements.txt` file**
-Since you are working with satellite data, you need very specific libraries. Create a file named `requirements.txt` and paste this:
+### Что сделать дальше:
+1. **requirements.txt**: Обязательно создай этот файл отдельно (как я советовал выше) и перенеси туда только список библиотек.
+2. **Имена**: Замени `[Имя]` на реальные имена участников твоей команды.
+3. **Demo**: Если у вас уже есть скриншот интерфейса или красивая схема, добавь её в папку `data/` и вставь ссылку в README — это всегда добавляет баллов.
 
-```text
-# Core Data Science
-numpy==1.26.4
-pandas==2.2.0
-geopandas==0.14.3
-
-# Satellite & GIS
-rasterio==1.3.9
-shapely==2.0.3
-sentinelsat==1.2.1
-folium==0.15.1
-
-# AI & Backend
-fastapi==0.109.2
-uvicorn==0.27.1
-google-generativeai==0.4.0
-torch==2.2.0
-
-# Frontend
-streamlit==1.31.1
+**Хочешь, чтобы я набросал структуру презентации (Pitch Deck), чтобы вы начали готовить слайды?**
