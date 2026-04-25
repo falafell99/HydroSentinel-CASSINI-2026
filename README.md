@@ -92,21 +92,6 @@ Meter readings should be signed with Galileo OSNMA metadata and a GPS timestamp.
 - Stream or job queue: scheduled ingestion and async scoring jobs.
 - Analytics store: time-series history of scores and meter events.
 
-## Recommended tech stack
-
-### Frontend
-
-- MapLibre GL JS for interactive geospatial layers.
-- Tailwind CSS for fast UI composition.
-- Vite + react as frontend framework
-- Django rest for backend
-
-### Backend
-
-- Python with FastAPI for the API layer.
-- Pydantic for typed request and response models.
-- GeoAlchemy2 and SQLAlchemy for geospatial persistence.
-- Celery or a lightweight queue for async ingestion and scoring jobs.
 
 ### Data and storage
 
