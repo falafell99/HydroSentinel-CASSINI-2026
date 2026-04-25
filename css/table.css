@@ -1,0 +1,180 @@
+/* ══════════════════════════════════════════
+   css/table.css — Fields table view
+   ══════════════════════════════════════════ */
+
+/* ── TABLE VIEW LAYOUT ── */
+#view-table {
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── TOOLBAR ── */
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.search-input {
+  max-width: 220px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: #aaa; }
+.toolbar-btn {
+  font-size: 12px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.toolbar-btn:hover { background: var(--color-surface); }
+.toolbar-btn.anomaly-filter {
+  background: #FDECEA;
+  color: var(--color-anomaly);
+  border-color: #F7C1C1;
+}
+.toolbar-btn.anomaly-filter.inactive {
+  background: #fff;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+.toolbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toolbar-sort-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* ── TABLE ── */
+.table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 920px;
+}
+thead tr {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+th {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+th.sortable          { cursor: pointer; }
+th.sortable:hover    { color: var(--color-text); }
+td {
+  font-size: 12px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ── ROW OPACITY BY STATUS ── */
+tr.row-anomaly { opacity: 1; }
+tr.row-warning { opacity: 0.65; }
+tr.row-ok      { opacity: 0.5; }
+tbody tr:hover { background: var(--color-surface); }
+
+/* ── CELL STYLES ── */
+.td-bold       { font-weight: 600; }
+.td-red        { color: var(--color-anomaly); }
+.td-amber-text { color: #BA7517; }
+.td-gray       { color: var(--color-text-secondary); }
+
+.waste-bar-wrap { display: flex; align-items: center; gap: 6px; }
+.waste-bar-track {
+  width: 80px;
+  height: 4px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.waste-bar-fill {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-red);
+}
+
+.status-pill {
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-weight: 500;
+  display: inline-block;
+}
+.status-pill.anomaly { background: #FDECEA; color: var(--color-anomaly); }
+.status-pill.warning { background: #FDF3E2; color: #633806; }
+.status-pill.ok      { background: #EEFAD5; color: #27500A; }
+
+.td-soil-sat    { color: var(--color-anomaly); font-weight: 500; }
+.td-soil-high   { color: #BA7517; font-weight: 500; }
+.td-soil-normal { color: #27500A; font-weight: 500; }
+
+.btn-view {
+  font-size: 11px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+.btn-view:hover { background: var(--color-surface); }
+
+/* ── PAGINATION ── */
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.pagination-info  { font-size: 11px; color: var(--color-text-secondary); }
+.pagination-btns  { display: flex; align-items: center; gap: 4px; }
+.pg-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.pg-btn:hover  { background: var(--color-surface); }
+.pg-btn.active {
+  background: var(--color-text);
+  color: #fff;
+  border-color: var(--color-text);
+}

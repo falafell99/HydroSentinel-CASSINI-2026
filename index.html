@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AquaGuard — Agricultural Water Monitoring · Pest County</title>
+  <meta name="description"
+    content="AquaGuard: Satellite-verified water efficiency monitoring for Hungarian agricultural water authorities. Identify over-consuming farms using Copernicus data." />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="css/main.css?v=2" />
+  <link rel="stylesheet" href="css/map.css?v=2" />
+  <link rel="stylesheet" href="css/table.css?v=2" />
+  <link rel="stylesheet" href="css/detail.css?v=2" />
+  <link rel="stylesheet" href="css/reports.css?v=2" />
+  <link rel="stylesheet" href="css/settings.css?v=2" />
+</head>
+
+<body>
+
+  <!-- ══════════════ NAV BAR ══════════════ -->
+  <nav id="navbar">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="none">
+          <path d="M5.5 0C5.5 0 0 5.2 0 8.1C0 10.8 2.46 13 5.5 13C8.54 13 11 10.8 11 8.1C11 5.2 5.5 0Z" fill="white" />
+        </svg>
+      </div>
+      <span class="nav-brand-text">AquaGuard</span>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" id="tab-map"      onclick="showView('map')">Map</div>
+      <div class="nav-tab"        id="tab-fields"   onclick="showView('table')">Fields</div>
+      <div class="nav-tab"        id="tab-reports"  onclick="showView('reports')">Reports</div>
+      <div class="nav-tab"        id="tab-settings" onclick="showView('settings')">Settings</div>
+    </div>
+    <div class="nav-right">
+      <span class="badge-anomaly">4 anomalies</span>
+      <span class="nav-inspector">Pest County · Inspector Kovács</span>
+    </div>
+  </nav>
+
+  <!-- ══════════════ VIEWS ══════════════ -->
+  <div id="views">
+
+    <!-- ── VIEW 1: MAP ── -->
+    <div class="view active" id="view-map">
+
+      <!-- Left Sidebar -->
+      <div class="sidebar-left">
+        <div>
+          <div class="sidebar-section-label">County overview</div>
+          <div class="sidebar-big-number">847</div>
+          <div class="sidebar-sub">fields monitored</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Efficient</div>
+            <div class="stat-value green">791</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Warning</div>
+            <div class="stat-value amber">52</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Anomaly</div>
+            <div class="stat-value red">4</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Water saved</div>
+            <div class="stat-value blue">18k L</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-section-label">Filter by status</div>
+          <div class="filter-rows">
+            <div class="filter-row" id="filter-ok" onclick="toggleFilter('ok')">
+              <div class="filter-dot green"></div>
+              <span class="filter-label">Efficient</span>
+              <span class="filter-count">791</span>
+            </div>
+            <div class="filter-row" id="filter-warning" onclick="toggleFilter('warning')">
+              <div class="filter-dot amber"></div>
+              <span class="filter-label">Warning</span>
+              <span class="filter-count">52</span>
+            </div>
+            <div class="filter-row" id="filter-anomaly" onclick="toggleFilter('anomaly')">
+              <div class="filter-dot red"></div>
+              <span class="filter-label">Anomaly</span>
+              <span class="filter-count">4</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-section-label">Satellite layer</div>
+          <div class="checkbox-rows">
+            <label class="checkbox-row">
+              <input type="checkbox" id="layer-ndvi" checked /> NDVI (Sentinel-2)
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="layer-soil" /> Soil moisture (S-1)
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="layer-meters" /> Meter locations
+            </label>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:#aaa;line-height:1.5">
+            Toggle changes polygon<br>colour mode on the map.
+          </div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="map-wrapper">
+        <div id="map"></div>
+        <div class="map-legend">
+          <div class="map-legend-title">Map legend</div>
+          <div class="map-legend-row"><div class="legend-sq green"></div> Efficient (within 15%)</div>
+          <div class="map-legend-row"><div class="legend-sq amber"></div> Warning (15–40% over)</div>
+          <div class="map-legend-row"><div class="legend-sq red"></div> Anomaly (40%+ over)</div>
+        </div>
+        <div class="map-zoom-btns">
+          <div class="map-zoom-btn" id="zoom-in"  onclick="mapZoom(1)">+</div>
+          <div class="map-zoom-btn" id="zoom-out" onclick="mapZoom(-1)">−</div>
+        </div>
+        <div class="map-source-label">Copernicus Sentinel-2 · updated 2h ago</div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="sidebar-right">
+        <div class="sidebar-right-title">Active anomalies — today</div>
+        <div id="anomaly-alerts"></div>
+        <div class="sidebar-right-bottom">
+          <div class="sentinel-label">Sentinel-2 · 25 Apr 2026</div>
+          <button class="btn-open-field" onclick="openDetail('A-47')">Open field ↗</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIEW 2: TABLE ── -->
+    <div class="view" id="view-table" style="flex-direction:column;">
+      <div class="table-toolbar">
+        <input type="text" class="search-input" id="search-input" placeholder="Search field ID or owner…"
+          oninput="filterTable()" />
+        <button class="toolbar-btn anomaly-filter inactive" id="btn-anomaly-filter"
+          onclick="toggleAnomalyFilter()">Anomalies only · 4</button>
+        <button class="toolbar-btn" id="btn-all-filter" onclick="showAllRows()">All statuses</button>
+        <button class="toolbar-btn">This week</button>
+        <div class="toolbar-right">
+          <span class="toolbar-sort-label">Sorted by waste score ↓</span>
+          <button class="toolbar-btn" onclick="exportCSV()">Export CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="fields-table">
+          <thead>
+            <tr>
+              <th>Field ID</th>
+              <th>Owner</th>
+              <th>Crop</th>
+              <th>Area</th>
+              <th>Actual use</th>
+              <th>CWR estimate</th>
+              <th class="sortable" onclick="sortByWaste()">Waste score ↓</th>
+              <th>Soil moisture</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="table-pagination">
+        <span class="pagination-info">Showing 8 of 847 fields · filtered: anomalies + warnings</span>
+        <div class="pagination-btns">
+          <div class="pg-btn">←</div>
+          <div class="pg-btn active">1</div>
+          <div class="pg-btn">2</div>
+          <div class="pg-btn">3</div>
+          <div class="pg-btn">→</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIEW 3: DETAIL ── -->
+    <div class="view" id="view-detail" style="flex-direction:column;">
+      <div class="detail-breadcrumb">
+        <div class="breadcrumb-left">
+          <span class="bc-back" id="bc-back" onclick="goBack()">← Map</span>
+          <span class="bc-sep">·</span>
+          <span class="bc-title" id="bc-title">Field A-47 — Tóth Farm, Érd district</span>
+        </div>
+        <div class="breadcrumb-right">
+          <span class="detail-badge" id="detail-badge">+74% over CWR</span>
+          <span class="detail-updated">Last updated: 25 Apr, 08:14</span>
+        </div>
+      </div>
+      <div class="detail-main">
+        <!-- Detail Left -->
+        <div class="detail-left">
+          <div>
+            <div class="detail-section-title">Consumption vs satellite estimate — last 7 days</div>
+            <div class="chart-container">
+              <canvas id="detail-chart"></canvas>
+            </div>
+          </div>
+          <div>
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-card-label">Actual use today</div>
+                <div class="metric-card-value red" id="metric-actual">8,740 L</div>
+                <div class="metric-card-sub" id="metric-actual-sub">vs 5,020 L yesterday</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Satellite CWR</div>
+                <div class="metric-card-value" id="metric-cwr">4,950 L</div>
+                <div class="metric-card-sub">optimal need</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Waste delta</div>
+                <div class="metric-card-value red" id="metric-delta">+3,790 L</div>
+                <div class="metric-card-sub" id="metric-delta-sub">74% over estimate</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Days flagged</div>
+                <div class="metric-card-value amber" id="metric-days">4 days</div>
+                <div class="metric-card-sub">consecutive</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="detail-section-title">Satellite data — Copernicus</div>
+            <div class="satellite-cards">
+              <div class="satellite-card">
+                <div class="satellite-card-title">Sentinel-2 NDVI</div>
+                <div class="satellite-card-value green" id="sat-ndvi-value">0.61</div>
+                <div class="satellite-card-sub" id="sat-ndvi-sub">Wheat · mid growth stage</div>
+                <div class="sat-progress-track">
+                  <div class="sat-progress-fill green" id="sat-ndvi-bar" style="width:61%"></div>
+                </div>
+                <div class="satellite-card-note" id="sat-ndvi-note">Crop needs moderate water</div>
+              </div>
+              <div class="satellite-card">
+                <div class="satellite-card-title">Sentinel-1 soil moisture</div>
+                <div class="satellite-card-value red" id="sat-soil-value">Saturated</div>
+                <div class="satellite-card-sub" id="sat-soil-sub">Soil already saturated</div>
+                <div class="sat-progress-track">
+                  <div class="sat-progress-fill red" id="sat-soil-bar" style="width:88%"></div>
+                </div>
+                <div class="satellite-card-note" id="sat-soil-note">No additional irrigation needed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail Right -->
+        <div class="detail-right">
+          <div class="detail-right-section">
+            <div class="verdict-title">System verdict</div>
+            <div class="verdict-text" id="verdict-text">
+              Consumption is <strong>74% above</strong> satellite crop water requirement. Soil is saturated per
+              Sentinel-1. Farmer continues pumping. Possible causes: broken pipe, illegal diversion, or meter
+              malfunction.
+            </div>
+          </div>
+          <div class="info-rows">
+            <div class="info-row"><span class="info-row-label">Owner</span><span class="info-row-value" id="info-owner">István Tóth</span></div>
+            <div class="info-row"><span class="info-row-label">Crop type</span><span class="info-row-value" id="info-crop">Winter wheat</span></div>
+            <div class="info-row"><span class="info-row-label">Field size</span><span class="info-row-value" id="info-area">4.2 ha</span></div>
+            <div class="info-row"><span class="info-row-label">Water quota</span><span class="info-row-value" id="info-quota">120,000 L/month</span></div>
+            <div class="info-row"><span class="info-row-label">Used this month</span><span class="info-row-value red" id="info-used">98,400 L</span></div>
+            <div class="info-row"><span class="info-row-label">Quota remaining</span><span class="info-row-value amber" id="info-remaining">21,600 L</span></div>
+          </div>
+          <div class="galileo-box">
+            <div class="galileo-title">Galileo OSNMA — meter verified</div>
+            <div class="galileo-text" id="galileo-text">Meter GPS matches registered location. No tampering detected.
+              Reading is authentic. Last signed: 25 Apr 07:58.</div>
+          </div>
+          <div class="detail-actions">
+            <button class="action-btn action-btn-flag">Flag for inspection</button>
+            <button class="action-btn action-btn-default">See inspection workflow ↗</button>
+            <button class="action-btn action-btn-default">Export PDF report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIEW 4: REPORTS ── -->
+    <div class="view" id="view-reports" style="flex-direction:column;">
+      <div class="reports-inner">
+
+        <div class="reports-page-header">
+          <span class="reports-page-title">Reports &amp; Analytics</span>
+          <span class="reports-page-sub">Pest County · 25 Apr 2026 · Inspector session</span>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="reports-summary">
+          <div class="rpt-card">
+            <div class="rpt-card-label">Fields monitored</div>
+            <div class="rpt-card-value blue" id="rpt-fields">—</div>
+            <div class="rpt-card-sub">demo dataset</div>
+          </div>
+          <div class="rpt-card">
+            <div class="rpt-card-label">Anomalies today</div>
+            <div class="rpt-card-value red" id="rpt-anomalies">—</div>
+            <div class="rpt-card-sub">waste &gt; 40% CWR</div>
+          </div>
+          <div class="rpt-card">
+            <div class="rpt-card-label">Warnings</div>
+            <div class="rpt-card-value amber" id="rpt-warnings">—</div>
+            <div class="rpt-card-sub">waste 15–40% CWR</div>
+          </div>
+          <div class="rpt-card">
+            <div class="rpt-card-label">Total waste today</div>
+            <div class="rpt-card-value red" id="rpt-waste-l">—</div>
+            <div class="rpt-card-sub" id="rpt-waste-pct">—</div>
+          </div>
+          <div class="rpt-card">
+            <div class="rpt-card-label">Compliance rate</div>
+            <div class="rpt-card-value green" id="rpt-compliance">—</div>
+            <div class="rpt-card-sub">within quota</div>
+          </div>
+          <div class="rpt-card">
+            <div class="rpt-card-label">Data source</div>
+            <div class="rpt-card-value" style="font-size:13px">Copernicus</div>
+            <div class="rpt-card-sub">Sentinel 1 &amp; 2</div>
+          </div>
+        </div>
+
+        <!-- Live weather strip -->
+        <div class="weather-strip">
+          <span class="weather-title">Live weather · Pest County</span>
+          <div class="weather-items">
+            <div class="weather-item">
+              <span class="weather-item-label">ET₀ (Ref. evapotranspiration)</span>
+              <span class="weather-item-value" id="rpt-et0">Loading…</span>
+            </div>
+            <div class="weather-item">
+              <span class="weather-item-label">Temperature max/min</span>
+              <span class="weather-item-value" id="rpt-temp">Loading…</span>
+            </div>
+            <div class="weather-item">
+              <span class="weather-item-label">Precipitation</span>
+              <span class="weather-item-value" id="rpt-rain">Loading…</span>
+            </div>
+          </div>
+          <span class="weather-source" id="rpt-weather-src">Fetching Open-Meteo…</span>
+        </div>
+
+        <!-- Charts row -->
+        <div class="reports-charts-row">
+          <div class="rpt-chart-panel">
+            <div class="rpt-chart-title">Water waste by field</div>
+            <div class="rpt-chart-wrap">
+              <canvas id="rpt-bar-chart"></canvas>
+            </div>
+          </div>
+          <div class="rpt-chart-panel">
+            <div class="rpt-chart-title">7-day county water usage trend</div>
+            <div class="rpt-trend-wrap">
+              <canvas id="rpt-trend-chart"></canvas>
+            </div>
+          </div>
+          <div class="rpt-chart-panel">
+            <div class="rpt-chart-title">Status distribution</div>
+            <div class="rpt-chart-wrap">
+              <canvas id="rpt-doughnut"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quota utilisation -->
+        <div class="rpt-quota-panel">
+          <div class="rpt-chart-title">Monthly quota utilisation</div>
+          <div class="rpt-quota-wrap">
+            <canvas id="rpt-quota-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Recommendations table -->
+        <div class="rpt-recommendations-panel">
+          <div class="rpt-rec-header">
+            <span class="rpt-rec-title">Recommended enforcement actions</span>
+            <button class="toolbar-btn" onclick="exportCSV()">Export CSV</button>
+          </div>
+          <table class="rpt-rec-table">
+            <thead>
+              <tr>
+                <th>Field</th><th>Owner</th><th>Crop · Area</th>
+                <th>Waste</th><th>Urgency</th><th>Recommended action</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="rpt-recommendations-body"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── VIEW 5: SETTINGS ── -->
+    <div class="view" id="view-settings" style="flex-direction:column;">
+      <div class="settings-inner">
+
+        <div class="settings-page-header">
+          <span class="settings-page-title">Settings</span>
+          <span class="settings-page-sub">AquaGuard v1.0 · Pest County Water Authority</span>
+        </div>
+
+        <!-- Inspector profile -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-icon">👤</span>
+            <span class="settings-card-title">Inspector profile</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-form-grid">
+              <div class="settings-field">
+                <label class="settings-label">Full name</label>
+                <input class="settings-input" id="set-name" type="text" />
+              </div>
+              <div class="settings-field">
+                <label class="settings-label">Inspector ID</label>
+                <input class="settings-input" id="set-id" type="text" />
+              </div>
+              <div class="settings-field">
+                <label class="settings-label">County</label>
+                <input class="settings-input" id="set-county" type="text" />
+              </div>
+              <div class="settings-field">
+                <label class="settings-label">Role</label>
+                <input class="settings-input" id="set-role" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alert thresholds -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-icon">⚠️</span>
+            <span class="settings-card-title">Alert thresholds</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="threshold-row">
+              <span class="threshold-label">Anomaly threshold</span>
+              <input class="threshold-slider" id="set-anomaly-thresh" type="range" min="10" max="80" step="5" />
+              <span class="threshold-value" id="thresh-anomaly-val">40%</span>
+            </div>
+            <div class="threshold-row">
+              <span class="threshold-label">Warning threshold</span>
+              <input class="threshold-slider" id="set-warning-thresh" type="range" min="5" max="40" step="5" />
+              <span class="threshold-value" id="thresh-warning-val">15%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- API connections -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-icon">🛰</span>
+            <span class="settings-card-title">API connections</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="api-status-grid">
+              <div class="api-status-card">
+                <div class="api-status-name">Open-Meteo</div>
+                <div class="api-status-desc">Real weather &amp; ET₀ for Pest County. Free, no key required.</div>
+                <span class="api-status" id="api-openmeteo-status">Checking…</span>
+              </div>
+              <div class="api-status-card">
+                <div class="api-status-name">AquaGuard Backend</div>
+                <div class="api-status-desc">FastAPI on localhost:8000. Provides field data &amp; CWR computation.</div>
+                <span class="api-status" id="api-backend-status">Checking…</span>
+              </div>
+              <div class="api-status-card">
+                <div class="api-status-name">Sentinel Hub</div>
+                <div class="api-status-desc">Real NDVI satellite imagery. Register free at sentinelhub.com.</div>
+                <span class="api-status" id="api-sentinel-status">No key</span>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <div class="settings-label" style="margin-bottom:6px">Sentinel Hub API key (optional)</div>
+              <div class="sentinel-key-wrap">
+                <input class="settings-input" id="set-sentinel-key" type="password" placeholder="Paste your Sentinel Hub OAuth token here…" />
+                <button class="btn-verify">Verify key</button>
+              </div>
+              <div style="margin-top:6px;font-size:11px;color:#aaa">Get a free key at <strong>sentinelhub.com</strong>. Once added, NDVI and soil moisture will use real Sentinel-2 imagery.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data preferences -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <span class="settings-card-icon">🔄</span>
+            <span class="settings-card-title">Data &amp; refresh</span>
+          </div>
+          <div class="settings-card-body">
+            <div class="settings-form-grid">
+              <div class="settings-field">
+                <label class="settings-label">Satellite data refresh interval</label>
+                <select class="settings-select" id="set-refresh">
+                  <option value="1800">Every 30 minutes</option>
+                  <option value="3600" selected>Every hour</option>
+                  <option value="7200">Every 2 hours</option>
+                  <option value="86400">Once daily</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:16px">
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-row-label">Email anomaly alerts</div>
+                  <div class="toggle-row-sub">Send an email when a new anomaly is detected</div>
+                </div>
+                <input type="checkbox" id="set-email-alerts" style="accent-color:var(--color-blue);width:16px;height:16px;cursor:pointer" />
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <div class="toggle-row-label">Daily digest email</div>
+                  <div class="toggle-row-sub">Summary report sent each morning</div>
+                </div>
+                <input type="text" id="set-digest" class="settings-input" style="width:200px" placeholder="your@email.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save row -->
+        <div class="settings-save-row">
+          <button id="btn-save-settings" onclick="saveSettingsForm()">Save settings</button>
+        </div>
+
+        <div class="settings-version">
+          AquaGuard v1.0 · Developed for Cassini Hackathon 2026 · Data: Copernicus Sentinel-1/2, Open-Meteo, Galileo OSNMA
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /views -->
+
+  <!-- ── CDN scripts (must load before ES module) ── -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- ── App entry point (ES module) ── -->
+  <script type="module" src="js/app.js?v=2"></script>
+
+</body>
+</html>
