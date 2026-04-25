@@ -8,6 +8,10 @@ Hungary has both drought and flood pressure at the same time. The MVP should hel
 
 Build a geospatial decision system that combines satellite imagery, weather, registry data, and meter readings to rank farms by water-risk and water-waste suspicion.
 
+## Pilot region
+
+Primary rollout focus is the Homokhatsag region (Danube-Tisza Interfluve), where drought pressure and groundwater decline are severe.
+
 ## MVP scope
 
 ### In scope
@@ -183,7 +187,7 @@ Verify meter readings with OSNMA and GPS proof to reduce spoofing.
 ## MVP delivery plan
 
 1. Build the geospatial data model and registry import.
-2. Add Sentinel-2 and Sentinel-1 ingestion for a small pilot region.
+2. Add Sentinel-2 and Sentinel-1 ingestion for Homokhatsag as the pilot region.
 3. Implement the first waste score and risk score rules.
 4. Ship the inspector map and alert workflow.
 5. Add OSNMA-based meter validation.
@@ -191,7 +195,7 @@ Verify meter readings with OSNMA and GPS proof to reduce spoofing.
 
 ## Open questions
 
-- Which pilot county should we start with?
+- Which sub-area inside Homokhatsag should be phase 1 (for example, 2-3 microregions)?
 - What registry format is available for parcel boundaries?
 - Which meter hardware can already emit signed GPS-aware readings?
 - What alert threshold should count as high risk for the first rollout?

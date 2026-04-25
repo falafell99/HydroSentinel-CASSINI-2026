@@ -10,7 +10,7 @@ participant "Scoring Service" as Scoring
 database "PostGIS" as PostGIS
 database "Analytics Store" as Analytics
 
-Inspector -> Dashboard : choose farm and target day
+Inspector -> Dashboard : choose Homokhatsag farm and target day
 Dashboard -> API : request prediction for selected day
 API -> Scenario : build scenario context
 Scenario -> PostGIS : load farm boundary and history

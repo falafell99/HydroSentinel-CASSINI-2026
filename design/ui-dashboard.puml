@@ -2,7 +2,7 @@
 title Inspector Dashboard UI
 
 rectangle "App Shell" {
-	rectangle "Top Bar\nSearch | Date Range | Region" as TopBar
+	rectangle "Top Bar\nSearch | Date Range | Region: Homokhatsag (default)" as TopBar
 	rectangle "Scenario Switcher\nToday | Selected Day | 7-Day View" as ScenarioSwitcher
 	rectangle "Filter Panel\nCrop | Risk | Alert State" as Filters
 	rectangle "Map View\nRisk layers and farm boundaries" as MapView
