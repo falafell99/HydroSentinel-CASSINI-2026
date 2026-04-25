@@ -1,0 +1,68 @@
+@startuml
+title Hungary Water Risk MVP Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam backgroundColor white
+
+actor Inspector
+actor Farmer
+actor "Regional Authority" as Authority
+
+rectangle "External Data Sources" {
+	component "Sentinel-2" as S2
+	component "Sentinel-1" as S1
+	component "Hungarian Registry" as Registry
+	component "Weather Feeds" as Weather
+	component "Drainage Maps" as Drainage
+	component "Meter Devices" as Meters
+}
+
+rectangle "Platform" {
+	component "Ingestion Service" as Ingestion
+	component "Geospatial Normalizer" as Normalize
+	component "Feature Engine" as Features
+	component "Scenario Engine" as Scenario
+	component "Scoring Service" as Scoring
+	component "Alert Service" as Alerts
+	component "API Gateway" as API
+	component "Web Dashboard" as Web
+}
+
+database "PostGIS" as PostGIS
+database "Analytics Store" as Analytics
+cloud "Object Storage" as ObjectStore
+
+Inspector --> Web
+Farmer --> Web
+Authority --> Web
+Web --> API
+
+S2 --> Ingestion
+S1 --> Ingestion
+Registry --> Ingestion
+Weather --> Ingestion
+Drainage --> Ingestion
+Meters --> Ingestion
+
+Ingestion --> ObjectStore
+Ingestion --> Normalize
+Normalize --> PostGIS
+Normalize --> Analytics
+
+PostGIS --> Features
+Analytics --> Features
+ObjectStore --> Features
+
+Features --> Scenario
+Scenario --> Scoring
+Scoring --> PostGIS
+Scoring --> Analytics
+Scoring --> Alerts
+
+Alerts --> API
+API --> Web
+API --> PostGIS
+API --> Analytics
+
+@enduml

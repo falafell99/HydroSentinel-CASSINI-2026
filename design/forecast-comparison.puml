@@ -1,0 +1,22 @@
+@startuml
+title Forecast Comparison Flow
+
+actor Farmer
+participant "Web Dashboard" as Dashboard
+participant "Forecast Service" as Forecast
+participant "Weather Feed" as Weather
+participant "Satellite Feed" as Satellite
+participant "Scenario Engine" as Scenario
+database "PostGIS" as PostGIS
+
+Farmer -> Dashboard : open field forecast page
+Dashboard -> Forecast : request selected days
+Forecast -> Weather : load weather windows
+Forecast -> Satellite : load image windows
+Forecast -> PostGIS : load parcel and crop metadata
+Forecast -> Scenario : compare requested days
+Scenario -> Scenario : produce water need and stress bands
+Scenario -> Forecast : return day-by-day comparison
+Forecast -> Dashboard : show green/yellow/red timeline
+
+@enduml

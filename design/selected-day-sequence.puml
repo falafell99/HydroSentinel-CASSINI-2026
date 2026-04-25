@@ -1,0 +1,25 @@
+@startuml
+title Sequence Diagram - Selected Day Prediction
+
+actor Inspector
+participant "Web Dashboard" as Dashboard
+participant "API Gateway" as API
+participant "Scenario Engine" as Scenario
+participant "Feature Engine" as Features
+participant "Scoring Service" as Scoring
+database "PostGIS" as PostGIS
+database "Analytics Store" as Analytics
+
+Inspector -> Dashboard : choose farm and target day
+Dashboard -> API : request prediction for selected day
+API -> Scenario : build scenario context
+Scenario -> PostGIS : load farm boundary and history
+Scenario -> Analytics : load prior weather and satellite features
+Scenario -> Features : request NDVI and soil wetness for day
+Features -> Scenario : return field features
+Scenario -> Scoring : calculate need, waste, and risk bands
+Scoring -> Scenario : return predicted bands and explanation
+Scenario -> API : response with selected-day prediction
+API -> Dashboard : render risk color and evidence panel
+
+@enduml
