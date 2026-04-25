@@ -1,4 +1,4 @@
-# cassini-hungry-zakaz-somsa
+# cassini-zakaz-somsa
 
 ## Problem
 
