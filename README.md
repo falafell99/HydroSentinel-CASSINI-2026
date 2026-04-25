@@ -91,7 +91,6 @@ Meter readings should be signed with Galileo OSNMA metadata and a GPS timestamp.
 
 - Frontend: map-based inspector dashboard and farmer portal.
 - API layer: farm lookup, scoring, alerts, audit log, and exports.
-- Geospatial store: PostGIS for parcels, boundaries, and score overlays.
 - Object storage: raw Sentinel scenes, derived raster tiles, and audit artifacts.
 - Stream or job queue: scheduled ingestion and async scoring jobs.
 - Analytics store: time-series history of scores and meter events.
