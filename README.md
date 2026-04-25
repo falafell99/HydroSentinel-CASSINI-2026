@@ -207,3 +207,9 @@ Verify meter readings with OSNMA and GPS proof to reduce spoofing.
 - [Selected-day prediction sequence](design/selected-day-sequence.puml)
 - [Inspector dashboard UI](design/ui-dashboard.puml)
 - [Forecast comparison flow](design/forecast-comparison.puml)
+
+## useful links:
+ - https://www.vizugy.hu/
+ - https://data.vizugy.hu/
+ - https://www.ksh.hu/agriculture
+ - https://www.ncdc.noaa.gov/cdo-web/
