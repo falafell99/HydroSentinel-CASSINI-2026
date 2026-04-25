@@ -96,10 +96,10 @@ Meter readings should be signed with Galileo OSNMA metadata and a GPS timestamp.
 
 ### Frontend
 
-- Next.js with React and TypeScript for the inspector and farmer web app.
 - MapLibre GL JS for interactive geospatial layers.
-- TanStack Query for server-state caching and refresh.
 - Tailwind CSS for fast UI composition.
+- Vite + react as frontend framework
+- Django rest for backend
 
 ### Backend
 
