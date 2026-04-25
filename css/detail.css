@@ -194,7 +194,80 @@
   line-height: 1.5;
 }
 
-/* ── ACTION BUTTONS ── */
+/* ── ACTION INTERVENTION PANEL ── */
+.action-panel {
+  margin: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.action-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 6px;
+}
+.action-urgency {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  background: #E5E7EB;
+  color: #374151;
+  margin-left: auto;
+}
+.action-urgency.high { background: #FECACA; color: #991B1B; }  /* Red */
+.action-urgency.critical { background: #991B1B; color: #FFFFFF; }
+.action-urgency.medium { background: #FEF3C7; color: #B45309; }
+
+.action-detail {
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.action-recovery {
+  font-size: 12px;
+  color: var(--color-green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.action-panel-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn-primary {
+  background: var(--color-blue);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--color-blue-dark); box-shadow: var(--shadow-sm); }
+.btn-primary.danger { background: var(--color-anomaly); }
+.btn-primary.danger:hover { background: var(--color-anomaly-outline); }
+
+/* ── ACTION BUTTONS (Bottom) ── */
 .detail-actions {
   margin-top: auto;
   padding: 12px 16px;

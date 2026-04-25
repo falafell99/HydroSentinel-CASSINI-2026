@@ -79,6 +79,20 @@ export function openDetail(fieldId) {
   document.getElementById('galileo-text').textContent =
     `Meter GPS matches registered location. No tampering detected. Reading is authentic. Last signed: ${f.galileoTime}.`;
 
+  // ── Action Panel ──
+  document.getElementById('action-detail').textContent = f.recommendedAction || 'No action required';
+  
+  const urgencyEl = document.getElementById('action-urgency');
+  urgencyEl.textContent = f.actionUrgency || 'None';
+  urgencyEl.className = 'action-urgency ' + (f.actionUrgency ? f.actionUrgency.toLowerCase() : 'none');
+
+  if (f.waterRecoveryEst > 0) {
+    document.getElementById('action-recovery-container').style.display = 'flex';
+    document.getElementById('action-recovery').textContent = `Est. potential recovery: ${f.waterRecoveryEst.toLocaleString()} L`;
+  } else {
+    document.getElementById('action-recovery-container').style.display = 'none';
+  }
+
   // ── Chart ──
   renderDetailChart(f);
 

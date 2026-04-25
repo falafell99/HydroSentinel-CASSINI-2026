@@ -218,6 +218,17 @@ DAYS_FLAGGED = {
     "C-03": 1, "F-07": 0, "B-04": 0, "D-09": 0
 }
 
+RECOMMENDED_ACTIONS = {
+    "A-47": {"action": "Issue Cease Irrigation Order", "urgency": "High"},
+    "C-12": {"action": "Dispatch Field Inspector (Meter Check)", "urgency": "Critical"},
+    "A-22": {"action": "Send Warning Notice (Inefficiency)", "urgency": "Medium"},
+    "B-33": {"action": "Investigate Probable Pipe Leak", "urgency": "High"},
+    "C-03": {"action": "Monitor usage for 48 hours", "urgency": "Low"},
+    "F-07": {"action": "Monitor usage for 48 hours", "urgency": "Low"},
+    "B-04": {"action": "No action required", "urgency": "None"},
+    "D-09": {"action": "No action required", "urgency": "None"}
+}
+
 NDVI_STAGES = {
     "A-47": "mid growth stage",   "C-12": "early growth stage",
     "A-22": "mid growth stage",   "B-33": "late growth stage",
@@ -329,6 +340,9 @@ def build_field(field_id: str) -> dict:
         ),
         "galileoTime":        planet_data["acquired"],
         "galileo_verified":   True,
+        "recommendedAction":  RECOMMENDED_ACTIONS.get(field_id, {}).get("action", "No action"),
+        "actionUrgency":      RECOMMENDED_ACTIONS.get(field_id, {}).get("urgency", "None"),
+        "waterRecoveryEst":   waste_delta if waste_pct > 15 else 0,
     }
 
 
