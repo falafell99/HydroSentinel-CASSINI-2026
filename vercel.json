@@ -1,10 +1,13 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "builds": [
-    { "src": "backend/main.py", "use": "@vercel/python" }
-  ],
+  "functions": {
+    "backend/main.py": {
+      "runtime": "python3.9"
+    }
+  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/main.py" }
+    { "source": "/api/(.*)", "destination": "/backend/main.py" },
+    { "source": "/(.*)",     "destination": "/index.html" }
   ]
 }
