@@ -11,14 +11,10 @@ import Toast from './Toast.jsx';
 import ActivityLog from './ActivityLog.jsx';
 import CommandPalette from './CommandPalette.jsx';
 import { FIELDS, SUMMARY } from '../data/fields.js';
+import { useMobile } from '../hooks/useMobile.js';
 
 let toastIdCounter = 0;
 
-/**
- * App — Root component
- * Manages: active tab, selected field, toasts, activity log, command palette
- * Simulates: meter drift (60s), satellite age (60s), new anomaly toast (90s)
- */
 export default function App() {
   const [activeTab, setActiveTab] = useState('map');
   const [selectedField, setSelectedField] = useState(null);
@@ -28,8 +24,8 @@ export default function App() {
   const [cmdOpen, setCmdOpen] = useState(false);
   const [anomalyCount, setAnomalyCount] = useState(SUMMARY.anomaly);
   const [fields, setFields] = useState(FIELDS);
+  const isMobile = useMobile();
 
-  // ── Meter drift simulation (60s) ──
   useEffect(() => {
     const iv = setInterval(() => {
       setFields(prev => prev.map(f => ({
@@ -40,7 +36,6 @@ export default function App() {
     return () => clearInterval(iv);
   }, []);
 
-  // ── New anomaly demo (90s) ──
   useEffect(() => {
     const timeout = setTimeout(() => {
       addToast({ type: 'warning', icon: '⚠️', title: 'New anomaly detected', body: 'Field G-15 · +44% over CWR · Nagykáta district' });
@@ -49,13 +44,9 @@ export default function App() {
     return () => clearTimeout(timeout);
   }, []);
 
-  // ── Cmd+K keyboard shortcut ──
   useEffect(() => {
     const handler = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCmdOpen(o => !o);
-      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setCmdOpen(o => !o); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -76,7 +67,7 @@ export default function App() {
 
   const handleAction = useCallback((type, field) => {
     if (type === 'cease') {
-      addToast({ type: 'success', icon: '✓', title: `Cease irrigation order issued`, body: `Field ${field.id} · ${field.owner} · ${new Date().toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}` });
+      addToast({ type: 'success', icon: '✓', title: 'Cease irrigation order issued', body: `Field ${field.id} · ${field.owner} · ${new Date().toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}` });
       addActivityEntry({ time: new Date().toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }), icon: 'Shield', color: 'var(--green)', label: `Cease order issued · Field ${field.id} · ${field.owner}` });
     } else if (type === 'flag') {
       addToast({ type: 'warning', icon: '🚩', title: 'Field flagged for inspection', body: `Field ${field.id} · ${field.owner}` });
@@ -97,55 +88,48 @@ export default function App() {
     setActiveTab(tab);
   }, []);
 
-  // Content left margin accounts for sidebar (64px)
-  const contentLeft = 64;
+  // ── Responsive layout dimensions ──────────────────────────────────────────
+  const contentLeft   = isMobile ? 0 : 64;
+  const contentBottom = isMobile ? 56 : 0;
+  // On desktop, content shrinks right when detail panel opens; on mobile the panel goes full-screen
+  const contentRight  = (!isMobile && selectedField) ? 400 : 0;
 
   return (
     <div style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column' }}>
       <TopBar anomalyCount={anomalyCount} />
       <Sidebar activeTab={activeTab} onTabChange={handleTabChange} onActivityLogOpen={() => setActivityLog(true)} />
 
-      {/* Main content */}
+      {/* Main content area */}
       <div style={{
         position: 'fixed',
         top: 52,
         left: contentLeft,
-        right: selectedField ? 400 : 0,
-        bottom: 0,
+        right: contentRight,
+        bottom: contentBottom,
         overflow: 'hidden',
         transition: 'right 0.3s cubic-bezier(0.4,0,0.2,1)',
+        // Hide content when full-screen panel is open on mobile
+        visibility: (isMobile && selectedField) ? 'hidden' : 'visible',
         zIndex: 1,
       }}>
-        {activeTab === 'map' && (
-          <MapView onFieldSelect={handleFieldSelect} selectedField={selectedField} />
-        )}
-        {activeTab === 'fields' && (
-          <FieldsTable onFieldSelect={handleFieldSelect} />
-        )}
-        {activeTab === 'reports' && (
-          <ReportsTab onAction={handleAction} />
-        )}
-        {activeTab === 'settings' && (
-          <SettingsTab />
-        )}
+        {activeTab === 'map'      && <MapView onFieldSelect={handleFieldSelect} selectedField={selectedField} />}
+        {activeTab === 'fields'   && <FieldsTable onFieldSelect={handleFieldSelect} />}
+        {activeTab === 'reports'  && <ReportsTab onAction={handleAction} />}
+        {activeTab === 'settings' && <SettingsTab />}
       </div>
 
-      {/* Field detail panel */}
+      {/* Field detail panel — full-screen on mobile, 400px drawer on desktop */}
       {selectedField && (
         <FieldDetailPanel
           field={selectedField}
           onClose={() => setSelectedField(null)}
           onAction={handleAction}
+          isMobile={isMobile}
         />
       )}
 
-      {/* Toasts */}
       <Toast toasts={toasts} onDismiss={dismissToast} />
-
-      {/* Activity log */}
       <ActivityLog open={activityLog} onClose={() => setActivityLog(false)} entries={activityEntries} />
-
-      {/* Command palette */}
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onFieldSelect={handleFieldSelect} />
     </div>
   );

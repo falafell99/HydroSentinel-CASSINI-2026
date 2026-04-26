@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polygon, Tooltip, Popup, CircleMarker, Polyline } from 'react-leaflet';
 import { FIELDS, SUMMARY } from '../data/fields.js';
 import { useCounterAnimation } from '../hooks/useCounterAnimation.js';
-import { Satellite, Droplets, MapPin } from 'lucide-react';
+import { useMobile } from '../hooks/useMobile.js';
+import { Satellite, Droplets, MapPin, ChevronUp, ChevronDown } from 'lucide-react';
 
 // ─── Field polygon colours ────────────────────────────────────────────────────
 const STATUS_STYLE = {
@@ -77,6 +78,9 @@ export default function MapView({ onFieldSelect }) {
   const [layers, setLayers] = useState({ ndvi: true, soil: true, meters: false, waterBodies: true, knnLines: true });
   const [ndviAge, setNdviAge] = useState(15);
   const [soilAge, setSoilAge] = useState(8);
+  const isMobile = useMobile();
+  // On mobile, panel is hidden by default; on desktop always visible
+  const [showPanel, setShowPanel] = useState(false);
 
   // Water bodies fetched from backend
   const [waterBodies, setWaterBodies] = useState([]);
@@ -140,12 +144,27 @@ export default function MapView({ onFieldSelect }) {
   );
 
   return (
-    <div style={{ display: 'flex', height: '100%', width: '100%' }}>
+    <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: isMobile ? 'column' : 'row' }}>
       {/* ── Left panel ── */}
+      {/* Desktop: always visible | Mobile: toggleable overlay */}
+      {(showPanel || !isMobile) && (
       <div style={{
-        width: 340, flexShrink: 0, height: '100%',
-        background: 'var(--bg-surface)', borderRight: '1px solid var(--border)',
-        overflowY: 'auto', display: 'flex', flexDirection: 'column',
+        width: isMobile ? '100%' : 340,
+        flexShrink: 0,
+        height: isMobile ? '65%' : '100%',
+        background: 'var(--bg-surface)',
+        borderRight: isMobile ? 'none' : '1px solid var(--border)',
+        borderBottom: isMobile ? '1px solid var(--border)' : 'none',
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        position: isMobile ? 'absolute' : 'relative',
+        bottom: isMobile ? 0 : 'auto',
+        left: isMobile ? 0 : 'auto',
+        right: isMobile ? 0 : 'auto',
+        zIndex: isMobile ? 600 : 'auto',
+        boxShadow: isMobile ? '0 -4px 20px rgba(0,0,0,0.15)' : 'none',
+        borderRadius: isMobile ? '12px 12px 0 0' : 0,
       }}>
         {/* Drought banner */}
         {!droughtDismissed && (
@@ -255,6 +274,7 @@ export default function MapView({ onFieldSelect }) {
           </div>
         </div>
       </div>
+      )} {/* end left panel */}
 
       {/* ── Map ── */}
       <div style={{ flex: 1, position: 'relative' }}>
@@ -419,6 +439,41 @@ export default function MapView({ onFieldSelect }) {
             );
           })}
         </MapContainer>
+
+        {/* Mobile FAB: toggle stats panel */}
+        {isMobile && (
+          <button
+            onClick={() => setShowPanel(p => !p)}
+            style={{
+              position: 'absolute', bottom: 16, left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 700,
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '10px 20px',
+              background: '#0F1F3D', color: '#fff',
+              border: 'none', borderRadius: 24,
+              fontSize: 13, fontWeight: 600,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+              cursor: 'pointer',
+            }}
+          >
+            {showPanel
+              ? <><ChevronDown size={16} /> Hide stats</>
+              : <><ChevronUp   size={16} /> County stats &amp; layers</>}
+          </button>
+        )}
+
+        {/* Backdrop dim when panel open on mobile */}
+        {isMobile && showPanel && (
+          <div
+            onClick={() => setShowPanel(false)}
+            style={{
+              position: 'absolute', inset: 0,
+              background: 'rgba(0,0,0,0.35)',
+              zIndex: 599,
+            }}
+          />
+        )}
       </div>
     </div>
   );

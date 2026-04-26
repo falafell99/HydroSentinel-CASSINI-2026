@@ -24,7 +24,7 @@ const riskBg    = (level) => level === 'flood' ? 'var(--blue-light,#EFF6FF)' : l
 const riskBorder= (level) => level === 'flood' ? '#BFDBFE' : level === 'drought' ? 'var(--amber-border)' : level === 'both' ? 'var(--red-border)' : 'var(--green-border)';
 const riskLabel = (level) => ({ flood:'Flood risk nearby', drought:'Drought stress nearby', both:'Flood + Drought', ok:'Water stable', unknown:'Checking…' })[level] || 'Checking…';
 
-export default function FieldDetailPanel({ field, onClose, onAction }) {
+export default function FieldDetailPanel({ field, onClose, onAction, isMobile = false }) {
   const [displayedText, setDisplayedText] = useState('');
   const [chartMounted, setChartMounted] = useState(false);
   const { waterBodies, riskLevel, insight, insightModel, loading: wrLoading, error: wrError } = useWaterRisk(field?.id);
@@ -103,11 +103,15 @@ export default function FieldDetailPanel({ field, onClose, onAction }) {
 
   return (
     <div style={{
-      position: 'fixed', top: 52, right: 0, bottom: 0,
-      width: 390,
+      position: 'fixed',
+      top: 52,
+      right: 0,
+      bottom: isMobile ? 56 : 0,
+      left: isMobile ? 0 : 'auto',
+      width: isMobile ? '100%' : 390,
       background: 'var(--bg-surface)',
-      borderLeft: '1px solid var(--border)',
-      boxShadow: '-4px 0 20px rgba(0,0,0,0.08)',
+      borderLeft: isMobile ? 'none' : '1px solid var(--border)',
+      boxShadow: isMobile ? 'none' : '-4px 0 20px rgba(0,0,0,0.08)',
       display: 'flex', flexDirection: 'column',
       zIndex: 800,
       animation: 'slideInRight 0.25s ease-out',
