@@ -137,20 +137,52 @@ Tone: direct, professional, actionable. No bullet points. Plain paragraph."""
 def get_llm_insight(field_id: str, meta: dict, nearest: list[dict]) -> str:
     token = os.environ.get("GITHUB_TOKEN")
     if not token:
-        # Rule-based fallback
-        top = nearest[0] if nearest else None
-        if top and top["drought_score"] > 0.5:
-            return (f"The nearest water body, {top['name']} ({top['distance_km']} km), shows significant drought stress "
-                    f"(drought score {top['drought_score']}). Relying on this source for irrigation is not recommended. "
-                    f"Consider reducing irrigation frequency and switching to drip irrigation to minimise water use.")
-        elif top and top["flood_score"] > 0.4:
-            return (f"{top['name']} ({top['distance_km']} km) currently has elevated water levels (flood score {top['flood_score']}). "
-                    f"There may be an opportunity to capture surplus water into on-farm storage before levels recede. "
-                    f"Contact the district water authority (OVIT) to request a temporary diversion permit.")
-        else:
-            return (f"Water conditions near field {field_id} are currently stable. "
-                    f"The nearest monitored water body is {top['name']} at {top['distance_km']} km. "
-                    f"Continue standard irrigation scheduling aligned with the satellite CWR estimate.")
+        # Enhanced rule-based fallback using all 3 nearest water bodies + field metadata
+        if not nearest:
+            return f"No nearby water body data available for field {field_id}."
+        top      = nearest[0]
+        crop     = meta.get("crop", "crop")
+        area     = meta.get("area_ha", "?")
+        district = meta.get("district", "")
+
+        flood_wbs   = [wb for wb in nearest if wb["flood_score"]   > 0.4]
+        drought_wbs = [wb for wb in nearest if wb["drought_score"] > 0.4]
+
+        parts = []
+
+        if flood_wbs:
+            fb = flood_wbs[0]
+            parts.append(
+                f"{fb['name']} ({fb['distance_km']} km) currently shows elevated water levels "
+                f"(flood score {fb['flood_score']:.2f}), indicating surplus water. "
+                f"For the {area} ha {crop} field in {district}, this is an opportunity to capture water "
+                f"into on-farm storage before levels recede — contact the district OVIT office for a temporary diversion permit."
+            )
+
+        if drought_wbs:
+            names = ", ".join(f"{wb['name']} ({wb['distance_km']} km)" for wb in drought_wbs)
+            parts.append(
+                f"{'The following nearby' if len(drought_wbs) > 1 else 'Nearby'} water "
+                f"{'bodies show' if len(drought_wbs) > 1 else 'body shows'} significant drought stress: {names}. "
+                f"Do not rely on {'these sources' if len(drought_wbs) > 1 else 'this source'} for irrigation — "
+                f"consider switching the {crop} field to drip irrigation to reduce total extraction."
+            )
+
+        if not flood_wbs and not drought_wbs:
+            parts.append(
+                f"All {len(nearest)} monitored water bodies near field {field_id} ({district}) are currently stable. "
+                f"The nearest is {top['name']} at {top['distance_km']} km. "
+                f"Continue standard irrigation scheduling for the {area} ha {crop} field, "
+                f"aligned with the satellite CWR estimate of {meta.get('annual_quota_m3', 'N/A')} m³/year quota."
+            )
+
+        if len(nearest) >= 2 and not flood_wbs:
+            sec = nearest[1]
+            parts.append(
+                f"Monitor {sec['name']} ({sec['distance_km']} km) as a secondary source should primary supply tighten."
+            )
+
+        return " ".join(parts)
     try:
         client = OpenAI(base_url="https://models.github.ai/inference", api_key=token)
         response = client.chat.completions.create(

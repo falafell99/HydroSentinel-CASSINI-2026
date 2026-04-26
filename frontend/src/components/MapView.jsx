@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Polygon, Tooltip, CircleMarker, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Polygon, Tooltip, Popup, CircleMarker, Polyline } from 'react-leaflet';
 import { FIELDS, SUMMARY } from '../data/fields.js';
 import { useCounterAnimation } from '../hooks/useCounterAnimation.js';
 import { Satellite, Droplets, MapPin } from 'lucide-react';
@@ -333,7 +333,7 @@ export default function MapView({ onFieldSelect }) {
             );
           })}
 
-          {/* Farm polygons */}
+          {/* Farm polygons — detailed area when zoomed in */}
           {FIELDS.map((field) => (
             <Polygon
               key={field.id}
@@ -344,19 +344,80 @@ export default function MapView({ onFieldSelect }) {
                 mouseover: e => e.target.setStyle({ fillOpacity: 0.6, weight: 3 }),
                 mouseout:  e => e.target.setStyle({ fillOpacity: STATUS_STYLE[field.status].fillOpacity, weight: STATUS_STYLE[field.status].weight }),
               }}
-            >
-              <Tooltip>
-                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 13, lineHeight: 1.6 }}>
-                  <strong>Field {field.id} · {field.owner}</strong><br />
-                  {field.crop} · {field.area} ha<br />
-                  Actual: {field.actualUse.toLocaleString()} L &nbsp;|&nbsp; CWR: {field.cwr.toLocaleString()} L<br />
-                  <span style={{ color: field.status === 'anomaly' ? '#DC2626' : field.status === 'warning' ? '#D97706' : '#16A34A', fontWeight: 600 }}>
-                    Waste: +{field.wastePercent}% {field.status === 'anomaly' ? '⚠ ANOMALY' : field.status === 'warning' ? '⚠ WARNING' : '✓ EFFICIENT'}
-                  </span>
-                </div>
-              </Tooltip>
-            </Polygon>
+            />
           ))}
+
+          {/* Farm centroid markers — always visible at any zoom level */}
+          {FIELDS.map((field) => {
+            const fc = centroid(field.coordinates);
+            const sc = field.status === 'anomaly' ? '#DC2626' : field.status === 'warning' ? '#D97706' : '#16A34A';
+            const nearest = knnMatches[field.id]?.[0];
+            const waste = field.actualUse - field.cwr;
+            return (
+              <CircleMarker
+                key={`pin-${field.id}`}
+                center={fc}
+                radius={field.status === 'anomaly' ? 9 : field.status === 'warning' ? 8 : 7}
+                pathOptions={{ color: '#fff', fillColor: sc, fillOpacity: 0.92, weight: 2 }}
+              >
+                <Popup maxWidth={300} className="farm-popup">
+                  <div style={{ fontFamily: 'system-ui, sans-serif', minWidth: 260 }}>
+                    {/* Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                      <div>
+                        <strong style={{ fontSize: 14, color: '#111' }}>Field {field.id}</strong>
+                        <span style={{ marginLeft: 8, fontSize: 11, padding: '2px 7px', borderRadius: 10, background: sc + '22', color: sc, fontWeight: 600 }}>
+                          {field.status === 'anomaly' ? '⚠ ANOMALY' : field.status === 'warning' ? '⚠ WARNING' : '✓ OK'}
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 12, color: '#555', marginBottom: 10 }}>
+                      {field.owner} · {field.crop} · {field.area} ha
+                    </div>
+
+                    {/* Water use stats */}
+                    <table style={{ fontSize: 12, width: '100%', borderCollapse: 'collapse', marginBottom: 10 }}>
+                      <tbody>
+                        <tr>
+                          <td style={{ color: '#777', paddingBottom: 4 }}>Actual use</td>
+                          <td style={{ fontWeight: 600, paddingLeft: 12, paddingBottom: 4, color: sc }}>{field.actualUse.toLocaleString()} L</td>
+                        </tr>
+                        <tr>
+                          <td style={{ color: '#777', paddingBottom: 4 }}>CWR estimate</td>
+                          <td style={{ fontWeight: 600, paddingLeft: 12, paddingBottom: 4, color: '#16A34A' }}>{field.cwr.toLocaleString()} L</td>
+                        </tr>
+                        <tr>
+                          <td style={{ color: '#777' }}>Over-extraction</td>
+                          <td style={{ fontWeight: 700, paddingLeft: 12, color: sc }}>+{waste.toLocaleString()} L (+{field.wastePercent}%)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* Nearest water body */}
+                    {nearest && (
+                      <div style={{ background: '#F8F9FA', borderRadius: 6, padding: '8px 10px', marginBottom: 10 }}>
+                        <div style={{ fontSize: 10, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>Nearest water body (KNN)</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: '#111', marginBottom: 2 }}>{nearest.name}</div>
+                        <div style={{ display: 'flex', gap: 12, fontSize: 11 }}>
+                          <span style={{ color: '#555' }}>{nearest.distance_km} km</span>
+                          <span style={{ color: (nearest.flood_score ?? 0) > 0.4 ? '#2563EB' : '#888' }}>Flood {(nearest.flood_score ?? 0).toFixed(2)}</span>
+                          <span style={{ color: (nearest.drought_score ?? 0) > 0.4 ? '#EA580C' : '#888' }}>Drought {(nearest.drought_score ?? 0).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Open panel button */}
+                    <button
+                      onClick={() => onFieldSelect(field)}
+                      style={{ width: '100%', padding: '7px 12px', background: '#0098A6', color: '#fff', border: 'none', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      Open full detail panel →
+                    </button>
+                  </div>
+                </Popup>
+              </CircleMarker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>

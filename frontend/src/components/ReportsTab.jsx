@@ -109,10 +109,32 @@ function KPICard({ label, value, color, sub, delay, unit = '' }) {
   );
 }
 
+// Risk level badge helper
+function RiskBadge({ flood, drought }) {
+  const isFlood   = flood   > 0.5;
+  const isDrought = drought > 0.4;
+  if (isFlood && isDrought) return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#FEE2E2', color: '#DC2626', fontWeight: 600 }}>Both</span>;
+  if (isFlood)   return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#DBEAFE', color: '#2563EB', fontWeight: 600 }}>Flood</span>;
+  if (isDrought) return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#FEF3C7', color: '#D97706', fontWeight: 600 }}>Drought</span>;
+  return <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: '#DCFCE7', color: '#16A34A', fontWeight: 600 }}>Stable</span>;
+}
+
 export default function ReportsTab({ onAction }) {
   const { data: weather, loading: wLoading } = useWeatherData();
   const [visible, setVisible] = useState(false);
+  const [waterBodies, setWaterBodies] = useState([]);
+  const [wbLoading, setWbLoading] = useState(true);
+
   useEffect(() => { const t = setTimeout(() => setVisible(true), 50); return () => clearTimeout(t); }, []);
+
+  useEffect(() => {
+    fetch('/api/water-bodies/', { signal: AbortSignal.timeout(6000) })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.water_bodies) setWaterBodies(d.water_bodies); })
+      .catch(() => {})
+      .finally(() => setWbLoading(false));
+  }, []);
+
   if (!visible) return null;
 
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -284,6 +306,51 @@ export default function ReportsTab({ onAction }) {
         <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6, borderTop: '1px solid var(--border)', paddingTop: 10 }}>
           <span style={{ color: 'var(--red)', fontWeight: 600 }}>42%</span> of irrigation water in Pest County is applied to fields with soil already at or above field capacity (Sentinel-1 SAR, April 2026). This represents an estimated <strong>11,400 L/day</strong> of preventable waste across monitored fields.
         </div>
+      </section>
+
+      {/* Water Risk Summary */}
+      <section className="card" style={{ padding: '18px 20px' }}>
+        <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', letterSpacing: '0.1em', marginBottom: 14 }}>
+          WATER BODY RISK OVERVIEW · KNN ANALYSIS · PEST COUNTY
+        </div>
+        {wbLoading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: 36, borderRadius: 6 }} />)}
+          </div>
+        ) : waterBodies.length === 0 ? (
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>Backend offline — water risk data unavailable</div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+              <thead>
+                <tr>
+                  {['Water Body', 'Type', 'Water Level', 'Flow Rate', 'Flood Score', 'Drought Score', 'Status'].map(h => (
+                    <th key={h} style={{ padding: '8px 12px', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', textAlign: 'left', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {waterBodies.map((wb, i) => (
+                  <tr key={wb.id || i} style={{ background: i % 2 === 0 ? 'var(--bg-surface)' : '#FAFBFD', borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '9px 12px', fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{wb.name}</td>
+                    <td style={{ padding: '9px 12px', fontSize: 12, color: 'var(--text-muted)', textTransform: 'capitalize' }}>{wb.type.replace('_', ' ')}</td>
+                    <td style={{ padding: '9px 12px', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{wb.water_level_m} m</td>
+                    <td style={{ padding: '9px 12px', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{wb.avg_flow_m3s != null ? `${wb.avg_flow_m3s} m³/s` : '—'}</td>
+                    <td style={{ padding: '9px 12px', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, color: (wb.flood_score ?? 0) > 0.5 ? '#2563EB' : (wb.flood_score ?? 0) > 0.3 ? '#D97706' : '#16A34A' }}>
+                      {(wb.flood_score ?? 0).toFixed(3)}
+                    </td>
+                    <td style={{ padding: '9px 12px', fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 700, color: (wb.drought_score ?? 0) > 0.4 ? '#EA580C' : (wb.drought_score ?? 0) > 0.2 ? '#D97706' : '#16A34A' }}>
+                      {(wb.drought_score ?? 0).toFixed(3)}
+                    </td>
+                    <td style={{ padding: '9px 12px' }}>
+                      <RiskBadge flood={wb.flood_score ?? 0} drought={wb.drought_score ?? 0} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       {/* Enforcement table */}
