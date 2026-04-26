@@ -260,10 +260,9 @@ export default function MapView({ onFieldSelect }) {
       <div style={{ flex: 1, position: 'relative' }}>
         <MapContainer center={[47.35, 19.2]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            attribution='© OpenStreetMap contributors © CARTO'
-            subdomains="abcd"
-            maxZoom={20}
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            maxZoom={19}
           />
 
           {/* KNN lines: farm centroid → nearest water body */}
@@ -291,21 +290,42 @@ export default function MapView({ onFieldSelect }) {
                 key={wb.id}
                 center={[wb.lat, wb.lon]}
                 radius={radius}
-                pathOptions={{ color, fillColor: color, fillOpacity: 0.82, weight: 2 }}
+                pathOptions={{ color, fillColor: color, fillOpacity: 0.85, weight: 2.5 }}
               >
-                <Tooltip>
-                  <div style={{ fontFamily: 'sans-serif', minWidth: 200 }}>
-                    <strong style={{ fontSize: 13 }}>{wb.name}</strong><br />
-                    <span style={{ color: '#666', fontSize: 11 }}>{wb.type.replace('_', ' ').toUpperCase()}</span>
-                    <hr style={{ margin: '5px 0' }} />
-                    <div style={{ fontSize: 12 }}>
-                      <div>Water level: <b>{wb.water_level_m} m</b></div>
-                      <div>Flow rate: <b>{wb.avg_flow_m3s ?? 'N/A'} m³/s</b></div>
-                      <div>Flood score: <b style={{ color: (wb.flood_score ?? 0) > 0.4 ? '#3B82F6' : '#333' }}>{(wb.flood_score ?? 0).toFixed(3)}</b></div>
-                      <div>Drought score: <b style={{ color: (wb.drought_score ?? 0) > 0.4 ? '#F97316' : '#333' }}>{(wb.drought_score ?? 0).toFixed(3)}</b></div>
+                <Tooltip sticky maxWidth={280}>
+                  <div style={{
+                    fontFamily: 'system-ui, sans-serif',
+                    minWidth: 230,
+                    padding: '2px 4px',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0 }} />
+                      <strong style={{ fontSize: 14, color: '#111' }}>{wb.name}</strong>
                     </div>
-                    <hr style={{ margin: '5px 0' }} />
-                    <span style={{ fontSize: 11, color: '#555' }}>{wb.notes}</span>
+                    <div style={{ fontSize: 11, color: '#777', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      {wb.type.replace('_', ' ')}
+                    </div>
+                    <table style={{ fontSize: 12, width: '100%', borderCollapse: 'collapse' }}>
+                      <tbody>
+                        <tr><td style={{ color: '#555', paddingBottom: 3 }}>Water level</td><td style={{ fontWeight: 600, paddingBottom: 3, paddingLeft: 12 }}>{wb.water_level_m} m</td></tr>
+                        <tr><td style={{ color: '#555', paddingBottom: 3 }}>Flow rate</td><td style={{ fontWeight: 600, paddingBottom: 3, paddingLeft: 12 }}>{wb.avg_flow_m3s != null ? `${wb.avg_flow_m3s} m³/s` : 'N/A'}</td></tr>
+                        <tr>
+                          <td style={{ color: '#555', paddingBottom: 3 }}>Flood score</td>
+                          <td style={{ fontWeight: 700, paddingBottom: 3, paddingLeft: 12, color: (wb.flood_score ?? 0) > 0.4 ? '#2563EB' : '#22C55E' }}>
+                            {(wb.flood_score ?? 0).toFixed(3)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ color: '#555' }}>Drought score</td>
+                          <td style={{ fontWeight: 700, paddingLeft: 12, color: (wb.drought_score ?? 0) > 0.4 ? '#EA580C' : '#22C55E' }}>
+                            {(wb.drought_score ?? 0).toFixed(3)}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div style={{ marginTop: 8, padding: '6px 8px', background: '#F8F9FA', borderRadius: 4, fontSize: 11, color: '#555', lineHeight: 1.5 }}>
+                      {wb.notes}
+                    </div>
                   </div>
                 </Tooltip>
               </CircleMarker>
