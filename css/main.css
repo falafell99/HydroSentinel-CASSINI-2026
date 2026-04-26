@@ -1,0 +1,222 @@
+/* ══════════════════════════════════════════
+   css/main.css — Global reset, nav, views
+   ══════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #EAECEF;
+  --color-surface: #FFFFFF;
+  --color-border: #D1D5DB;
+  --color-border-light: #E5E7EB;
+  --color-text: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #9CA3AF;
+
+  /* Status Colors */
+  --color-anomaly: #DC2626;
+  /* Red-600 */
+  --color-anomaly-fill: rgba(220, 38, 38, 0.15);
+  --color-anomaly-outline: #B91C1C;
+
+  --color-warning: #D97706;
+  /* Amber-600 */
+  --color-warning-fill: rgba(217, 119, 6, 0.15);
+  --color-warning-outline: #B45309;
+
+  --color-ok: #059669;
+  /* Emerald-600 */
+  --color-ok-fill: rgba(5, 150, 105, 0.15);
+  --color-ok-outline: #047857;
+
+  --color-blue: #769ff7;
+  /* Blue-600 */
+  --color-blue-dark: #5b84f4;
+  /* Blue-900 */
+  --color-green: #059669;
+  --color-amber: #D97706;
+  --color-red: #DC2626;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 14px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── NAV BAR ── */
+#navbar {
+  height: 56px;
+  background: var(--color-blue-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: 30px;
+}
+
+.nav-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #3B82F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-logo svg {
+  display: block;
+  fill: #fff;
+  width: 14px;
+}
+
+.nav-brand-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.nav-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 56px;
+  gap: 8px;
+}
+
+.nav-tab {
+  font-size: 13px;
+  font-weight: 500;
+  color: #93C5FD;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.nav-tab:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-tab.active {
+  color: #FFFFFF;
+  border-bottom-color: #3B82F6;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-anomaly {
+  background: var(--color-anomaly);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+}
+
+.nav-inspector {
+  font-size: 13px;
+  color: #BFDBFE;
+  white-space: nowrap;
+}
+
+/* ── VIEW CONTAINERS ── */
+#views {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.view {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.view.active {
+  display: flex;
+}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+  border: 2px solid var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+
+  .sidebar-left,
+  .sidebar-right {
+    display: none;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .detail-right {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .detail-main {
+    flex-direction: column;
+  }
+}

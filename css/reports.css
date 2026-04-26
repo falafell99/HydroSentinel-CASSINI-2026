@@ -1,0 +1,198 @@
+/* ══════════════════════════════════════════
+   css/reports.css — Analytics & reports view
+   ══════════════════════════════════════════ */
+
+/* ── LAYOUT ── */
+#view-reports {
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--color-surface);
+}
+.reports-inner {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── HEADER ── */
+.reports-page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.reports-page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.reports-page-sub {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* ── SUMMARY CARDS ── */
+.reports-summary {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.rpt-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.rpt-card-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.rpt-card-value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-text);
+}
+.rpt-card-value.red    { color: var(--color-anomaly); }
+.rpt-card-value.amber  { color: #BA7517; }
+.rpt-card-value.green  { color: #27500A; }
+.rpt-card-value.blue   { color: var(--color-blue); }
+.rpt-card-sub {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 3px;
+}
+
+/* ── WEATHER STRIP ── */
+.weather-strip {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.weather-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.weather-items {
+  display: flex;
+  gap: 32px;
+  flex: 1;
+}
+.weather-item { display: flex; flex-direction: column; gap: 2px; }
+.weather-item-label { font-size: 10px; color: var(--color-text-secondary); }
+.weather-item-value { font-size: 14px; font-weight: 600; color: var(--color-text); }
+.weather-source {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* ── CHARTS ROW ── */
+.reports-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.7fr;
+  gap: 12px;
+}
+.rpt-chart-panel {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.rpt-chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 14px;
+}
+.rpt-chart-wrap { position: relative; height: 200px; }
+
+/* ── TREND SECTION ── */
+.rpt-trend-panel {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.rpt-trend-wrap { position: relative; height: 160px; }
+
+/* ── QUOTA SECTION ── */
+.rpt-quota-panel {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.rpt-quota-wrap { position: relative; height: 140px; }
+
+/* ── RECOMMENDATIONS TABLE ── */
+.rpt-recommendations-panel {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.rpt-rec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.rpt-rec-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.rpt-rec-table { width: 100%; border-collapse: collapse; }
+.rpt-rec-table th {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  padding: 8px 14px;
+  text-align: left;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.rpt-rec-table td {
+  font-size: 12px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--color-border-light);
+  vertical-align: middle;
+}
+.rpt-rec-table tr:last-child td { border-bottom: none; }
+.urgency-badge {
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-weight: 500;
+  display: inline-block;
+}
+.urgency-immediate { background: #FDECEA; color: var(--color-anomaly); }
+.urgency-high      { background: #FDF3E2; color: #633806; }
+.urgency-monitor   { background: #EEFAD5; color: #27500A; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .reports-summary      { grid-template-columns: repeat(3, 1fr); }
+  .reports-charts-row   { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .reports-summary      { grid-template-columns: 1fr 1fr; }
+  .reports-charts-row   { grid-template-columns: 1fr; }
+  .weather-items        { flex-wrap: wrap; gap: 12px; }
+}
