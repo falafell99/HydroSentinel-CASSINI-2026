@@ -163,13 +163,17 @@ export default function FieldDetailPanel({ field, onClose, onAction, isMobile = 
             ← Map
           </button>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn-outline" style={{ width: 'auto', padding: '5px 11px', fontSize: 12 }}>Export PDF</button>
             <button
               className="btn-outline"
-              style={{ width: 'auto', padding: '5px 11px', fontSize: 12, color: 'var(--amber)', borderColor: '#FDE68A' }}
-              onClick={() => onAction('flag', field)}
+              onClick={printPDF}
+              style={{ width: 'auto', padding: '5px 11px', fontSize: 12 }}
+            >Export PDF</button>
+            <button
+              className="btn-outline"
+              style={{ width: 'auto', padding: '5px 11px', fontSize: 12, color: flagged ? 'var(--green)' : 'var(--amber)', borderColor: flagged ? 'var(--green-border)' : '#FDE68A' }}
+              onClick={() => flagged ? null : setFlagModal(true)}
             >
-              <Flag size={11} /> Flag
+              <Flag size={11} /> {flagged ? 'Flagged ✓' : 'Flag'}
             </button>
           </div>
         </div>
