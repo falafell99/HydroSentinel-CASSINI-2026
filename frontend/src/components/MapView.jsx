@@ -260,9 +260,10 @@ export default function MapView({ onFieldSelect }) {
       <div style={{ flex: 1, position: 'relative' }}>
         <MapContainer center={[47.35, 19.2]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            maxZoom={19}
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'
+            subdomains="abcd"
+            maxZoom={20}
           />
 
           {/* KNN lines: farm centroid → nearest water body */}
