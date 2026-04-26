@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { X, Shield, CheckCircle, AlertTriangle, Flag, TrendingUp } from 'lucide-react';
+import { Shield, CheckCircle, AlertTriangle, Flag, TrendingUp, Droplets, Brain } from 'lucide-react';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useWaterRisk } from '../hooks/useWaterRisk.js';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
 
@@ -17,9 +18,16 @@ function GaugeBar({ value, max = 100, color }) {
   );
 }
 
+// Colour helpers for water risk scores
+const scoreColor = (score) => score > 0.55 ? 'var(--red)' : score > 0.3 ? 'var(--amber)' : 'var(--green)';
+const riskBg    = (level) => level === 'flood' ? 'var(--blue-light,#EFF6FF)' : level === 'drought' ? 'var(--amber-light)' : level === 'both' ? 'var(--red-light)' : 'var(--green-light)';
+const riskBorder= (level) => level === 'flood' ? '#BFDBFE' : level === 'drought' ? 'var(--amber-border)' : level === 'both' ? 'var(--red-border)' : 'var(--green-border)';
+const riskLabel = (level) => ({ flood:'Flood risk nearby', drought:'Drought stress nearby', both:'Flood + Drought', ok:'Water stable', unknown:'Checking…' })[level] || 'Checking…';
+
 export default function FieldDetailPanel({ field, onClose, onAction }) {
   const [displayedText, setDisplayedText] = useState('');
   const [chartMounted, setChartMounted] = useState(false);
+  const { waterBodies, riskLevel, insight, insightModel, loading: wrLoading, error: wrError } = useWaterRisk(field?.id);
 
   useEffect(() => {
     if (!field) return;
@@ -218,6 +226,98 @@ export default function FieldDetailPanel({ field, onClose, onAction }) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Water Risk KNN card ── */}
+      <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+          <Droplets size={13} style={{ color: 'var(--teal)' }} />
+          <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>NEAREST WATER BODIES · KNN k=3</span>
+        </div>
+
+        {wrLoading && !waterBodies && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: 36, borderRadius: 6 }} />)}
+          </div>
+        )}
+
+        {wrError && !waterBodies && (
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontStyle: 'italic' }}>Backend offline — water risk unavailable</div>
+        )}
+
+        {waterBodies && (
+          <>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              background: riskBg(riskLevel), border: `1px solid ${riskBorder(riskLevel)}`,
+              borderRadius: 20, padding: '4px 10px', marginBottom: 10,
+            }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: riskLevel === 'ok' ? 'var(--green)' : riskLevel === 'flood' ? '#1D4ED8' : 'var(--amber)' }}>
+                {riskLabel(riskLevel)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {waterBodies.map((wb, i) => (
+                <div key={wb.id || i} style={{
+                  display: 'grid', gridTemplateColumns: '1fr auto auto',
+                  alignItems: 'center', gap: 8,
+                  background: 'var(--bg-elevated)', borderRadius: 6, padding: '8px 10px',
+                  border: '1px solid var(--border)',
+                }}>
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 500 }}>{wb.name}</div>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>{wb.distance_km} km · {wb.type.replace('_',' ')}</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: scoreColor(wb.flood_score), fontWeight: 600 }}>F {wb.flood_score.toFixed(2)}</div>
+                    <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>flood</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: scoreColor(wb.drought_score), fontWeight: 600 }}>D {wb.drought_score.toFixed(2)}</div>
+                    <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>drought</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ── AI Insight card ── */}
+      <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10 }}>
+          <Brain size={13} style={{ color: 'var(--teal)' }} />
+          <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>AI WATER ADVISOR</span>
+          {insightModel && (
+            <span style={{ marginLeft: 'auto', fontSize: 9, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', background: 'var(--bg-elevated)', padding: '2px 6px', borderRadius: 4, border: '1px solid var(--border)' }}>
+              {insightModel === 'rule-based-fallback' ? 'rule-based' : 'GPT-4.1'}
+            </span>
+          )}
+        </div>
+
+        {wrLoading && !insight && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="skeleton" style={{ height: 14, borderRadius: 4, width: '95%' }} />
+            <div className="skeleton" style={{ height: 14, borderRadius: 4, width: '80%' }} />
+            <div className="skeleton" style={{ height: 14, borderRadius: 4, width: '88%' }} />
+          </div>
+        )}
+
+        {insight && (
+          <div style={{
+            background: 'var(--teal-light)', border: '1px solid rgba(0,152,166,0.2)',
+            borderLeft: '3px solid var(--teal)',
+            borderRadius: 7, padding: '11px 13px',
+          }}>
+            <p style={{ fontSize: 12, color: 'var(--text-primary)', lineHeight: 1.7, margin: 0 }}>
+              {insight}
+            </p>
+          </div>
+        )}
+
+        {!wrLoading && !insight && !wrError && (
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', fontStyle: 'italic' }}>Insight not available</div>
+        )}
       </div>
 
       {/* System verdict */}

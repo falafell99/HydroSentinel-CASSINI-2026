@@ -1,0 +1,122 @@
+[
+  {
+    "id": "wb-01",
+    "name": "Danube — Budapest (Pest bank)",
+    "type": "river",
+    "lat": 47.497,
+    "lon": 19.055,
+    "water_level_m": 2.8,
+    "avg_flow_m3s": 2100,
+    "notes": "Main stem Danube at Budapest. Spring snowmelt from Alps still elevated. Monitoring ongoing by OVIT."
+  },
+  {
+    "id": "wb-02",
+    "name": "Soroksári-Duna (Southern Danube arm)",
+    "type": "river",
+    "lat": 47.346,
+    "lon": 19.082,
+    "water_level_m": 1.9,
+    "avg_flow_m3s": 85,
+    "notes": "Regulated side-arm of the Danube. Sluice gates control flow. Key irrigation source for southern Pest farms."
+  },
+  {
+    "id": "wb-03",
+    "name": "Ráckeve–Soroksár Canal",
+    "type": "canal",
+    "lat": 47.161,
+    "lon": 18.945,
+    "water_level_m": 0.95,
+    "avg_flow_m3s": 6.2,
+    "notes": "Managed irrigation and navigation canal. Currently 37% below normal level — drought risk for Ráckeve district."
+  },
+  {
+    "id": "wb-04",
+    "name": "Velencei-tó (Lake Velence)",
+    "type": "lake",
+    "lat": 47.232,
+    "lon": 18.647,
+    "water_level_m": 0.88,
+    "avg_flow_m3s": null,
+    "notes": "Shallow lake, critically low this April. Evaporation and reduced inflow. Fishing and recreation bans in effect."
+  },
+  {
+    "id": "wb-05",
+    "name": "Homokhátság Irrigation Canal",
+    "type": "canal",
+    "lat": 47.118,
+    "lon": 19.512,
+    "water_level_m": 0.72,
+    "avg_flow_m3s": 2.1,
+    "notes": "Primary irrigation canal for the sandy Homokhátság region. Critically low — drought Level II advisory active."
+  },
+  {
+    "id": "wb-06",
+    "name": "Zagyva River",
+    "type": "river",
+    "lat": 47.407,
+    "lon": 19.826,
+    "water_level_m": 1.8,
+    "avg_flow_m3s": 12.4,
+    "notes": "Zagyva tributary of the Tisza. Spring flow slightly above normal from upstream rainfall. Stable."
+  },
+  {
+    "id": "wb-07",
+    "name": "Galga Stream (Aszód)",
+    "type": "river",
+    "lat": 47.651,
+    "lon": 19.397,
+    "water_level_m": 0.9,
+    "avg_flow_m3s": 1.4,
+    "notes": "Small stream in the northern Pest hills. Below normal due to dry April. Limited irrigation potential."
+  },
+  {
+    "id": "wb-08",
+    "name": "Gödöllő Retention Reservoir",
+    "type": "reservoir",
+    "lat": 47.598,
+    "lon": 19.371,
+    "water_level_m": 2.1,
+    "avg_flow_m3s": null,
+    "notes": "Municipal reservoir. Currently at 84% capacity. Serves urban supply and emergency irrigation buffer."
+  },
+  {
+    "id": "wb-09",
+    "name": "Gerje–Perje Canal (Cegléd)",
+    "type": "canal",
+    "lat": 47.177,
+    "lon": 19.801,
+    "water_level_m": 1.2,
+    "avg_flow_m3s": 4.8,
+    "notes": "Historic irrigation canal serving the Cegléd–Nagykőrös vegetable belt. Flow 20% below seasonal average."
+  },
+  {
+    "id": "wb-10",
+    "name": "Tápió River (Tápiószentmárton)",
+    "type": "river",
+    "lat": 47.381,
+    "lon": 19.891,
+    "water_level_m": 2.1,
+    "avg_flow_m3s": 7.9,
+    "notes": "Tápió catchment river. Received recent rainfall — currently near normal levels. Usable for supplemental irrigation."
+  },
+  {
+    "id": "wb-11",
+    "name": "Bugyi Oxbow Lake",
+    "type": "oxbow_lake",
+    "lat": 47.254,
+    "lon": 19.121,
+    "water_level_m": 1.3,
+    "avg_flow_m3s": null,
+    "notes": "Former Danube oxbow. Stagnant, low inflow. Slight drought risk but good wildlife habitat. Not suitable for irrigation."
+  },
+  {
+    "id": "wb-12",
+    "name": "Duna–Tisza Canal (Ráckeve section)",
+    "type": "canal",
+    "lat": 47.093,
+    "lon": 19.134,
+    "water_level_m": 0.68,
+    "avg_flow_m3s": 1.9,
+    "notes": "Inter-basin transfer canal. Severely reduced flow — this section shows the strongest drought signal in the county."
+  }
+]
