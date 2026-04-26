@@ -91,7 +91,9 @@ export function renderAnomalyAlerts() {
 }
 
 // ── API hydration ────────────────────────────────────────
-const API_URL = 'http://localhost:8000/api/fields/';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:8000/api/fields/' 
+  : '/api/fields/';
 
 async function loadFieldsFromAPI() {
   try {

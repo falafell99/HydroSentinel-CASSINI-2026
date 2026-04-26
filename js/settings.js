@@ -48,7 +48,9 @@ async function checkOpenMeteo() {
 async function checkBackend() {
   const el = document.getElementById('api-backend-status');
   try {
-    const res = await fetch('http://localhost:8000/api/stats/', { signal: AbortSignal.timeout(3000) });
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const baseUrl = isLocal ? 'http://localhost:8000/api/stats/' : '/api/stats/';
+    const res = await fetch(baseUrl, { signal: AbortSignal.timeout(3000) });
     if (res.ok) { el.textContent = '✓ Connected'; el.className = 'api-status connected'; }
     else throw new Error();
   } catch { el.textContent = '✗ Offline'; el.className = 'api-status disconnected'; }
