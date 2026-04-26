@@ -48,6 +48,26 @@ export default function FieldsTable({ onFieldSelect }) {
     else { setSortCol(col); setSortDir('desc'); }
   };
 
+  const exportCSV = () => {
+    const headers = ['Field ID','Owner','Crop','Area (ha)','Actual Use (L)','CWR Est. (L)','Waste %','Soil Moisture','Status','Quota Used %','Recommended Action'];
+    const rows = filtered.map(f => [
+      f.id, f.owner, f.crop, f.area,
+      f.actualUse, f.cwr, f.wastePercent,
+      f.soilMoisture, f.status, f.quotaUsed,
+      `"${f.recommendedAction || ''}"`
+    ]);
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `aquaguard-fields-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const filtered = FIELDS
     .filter(f => {
       const q = search.toLowerCase();
@@ -115,7 +135,7 @@ export default function FieldsTable({ onFieldSelect }) {
         ))}
 
         <div style={{ flex: 1 }} />
-        <button className="btn-teal-outline" style={{ padding: '7px 13px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <button className="btn-teal-outline" onClick={exportCSV} style={{ padding: '7px 13px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
           <Download size={13} /> Export CSV
         </button>
       </div>
