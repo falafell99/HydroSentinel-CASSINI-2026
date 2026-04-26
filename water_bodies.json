@@ -1,0 +1,134 @@
+[
+  {
+    "id": "wb_01",
+    "name": "Duna (Danube)",
+    "type": "river",
+    "lat": 46.7412,
+    "lon": 18.9823,
+    "water_level_m": 4.8,
+    "avg_flow_m3s": 2150,
+    "last_measured": "2024-06-01",
+    "notes": "Main river on western boundary; high flood risk in spring"
+  },
+  {
+    "id": "wb_02",
+    "name": "Tisza",
+    "type": "river",
+    "lat": 46.5891,
+    "lon": 20.2134,
+    "water_level_m": 5.6,
+    "avg_flow_m3s": 830,
+    "last_measured": "2024-06-01",
+    "notes": "Eastern boundary river; extreme flood risk; heavily regulated"
+  },
+  {
+    "id": "wb_03",
+    "name": "Kiskunsági Főcsatorna",
+    "type": "canal",
+    "lat": 46.7901,
+    "lon": 19.4023,
+    "water_level_m": 1.1,
+    "avg_flow_m3s": 4.2,
+    "last_measured": "2024-06-01",
+    "notes": "Central irrigation canal; frequently runs low in summer droughts"
+  },
+  {
+    "id": "wb_04",
+    "name": "Duna–Tisza-közi Hátság Canal",
+    "type": "canal",
+    "lat": 46.9213,
+    "lon": 19.2841,
+    "water_level_m": 0.7,
+    "avg_flow_m3s": 1.8,
+    "last_measured": "2024-06-01",
+    "notes": "Groundwater-fed canal; critically low in dry years"
+  },
+  {
+    "id": "wb_05",
+    "name": "Fehér-tó (Fehértó)",
+    "type": "lake",
+    "lat": 46.4523,
+    "lon": 19.9812,
+    "water_level_m": 0.4,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Shallow saline lake; drying trend over past decade; Ramsar site"
+  },
+  {
+    "id": "wb_06",
+    "name": "Kondor-tó",
+    "type": "lake",
+    "lat": 46.7021,
+    "lon": 19.5634,
+    "water_level_m": 0.6,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Small steppe lake; seasonal; partially dry in late summer"
+  },
+  {
+    "id": "wb_07",
+    "name": "Keleti Főcsatorna branch",
+    "type": "canal",
+    "lat": 46.8734,
+    "lon": 19.7512,
+    "water_level_m": 1.5,
+    "avg_flow_m3s": 6.3,
+    "last_measured": "2024-06-01",
+    "notes": "Eastern distribution canal; moderate and balanced risk profile"
+  },
+  {
+    "id": "wb_08",
+    "name": "Ágasegyházi Tározó",
+    "type": "reservoir",
+    "lat": 46.8512,
+    "lon": 19.5103,
+    "water_level_m": 2.3,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Managed retention reservoir; overflow risk during heavy spring rain"
+  },
+  {
+    "id": "wb_09",
+    "name": "Kolon-tó",
+    "type": "lake",
+    "lat": 46.7543,
+    "lon": 19.2231,
+    "water_level_m": 2.8,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Reed-marsh lake near Izsák; wetland habitat; moderate flood potential"
+  },
+  {
+    "id": "wb_10",
+    "name": "Alpári-Holt-Tisza",
+    "type": "oxbow_lake",
+    "lat": 46.8723,
+    "lon": 20.0341,
+    "water_level_m": 3.1,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Oxbow lake; fills rapidly when Tisza floods; harvestable surplus water"
+  },
+  {
+    "id": "wb_11",
+    "name": "Kiskőrösi Tározó",
+    "type": "reservoir",
+    "lat": 46.6102,
+    "lon": 19.2541,
+    "water_level_m": 1.9,
+    "avg_flow_m3s": null,
+    "last_measured": "2024-06-01",
+    "notes": "Small agricultural reservoir; used for supplementary irrigation"
+  },
+  {
+    "id": "wb_12",
+    "name": "Bócsai Belvízcsatorna",
+    "type": "canal",
+    "lat": 46.5312,
+    "lon": 19.3412,
+    "water_level_m": 2.0,
+    "avg_flow_m3s": 3.1,
+    "last_measured": "2024-06-01",
+    "notes": "Inland waterway canal; collects excess rainwater; flood risk in wet season"
+  }
+]

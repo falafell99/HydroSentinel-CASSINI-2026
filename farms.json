@@ -1,0 +1,167 @@
+[
+  {
+    "id": "farm_01",
+    "name": "Kovács Tanya",
+    "owner": "Kovács István",
+    "lat": 46.7823,
+    "lon": 19.4512,
+    "size_ha": 145,
+    "crop_type": "sunflower",
+    "irrigation": "drip",
+    "annual_water_need_m3": 87000
+  },
+  {
+    "id": "farm_02",
+    "name": "Nagy-pusztai Gazdaság",
+    "owner": "Nagy Erzsébet",
+    "lat": 46.6341,
+    "lon": 19.6874,
+    "size_ha": 210,
+    "crop_type": "wheat",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 105000
+  },
+  {
+    "id": "farm_03",
+    "name": "Homoki Birtok",
+    "owner": "Szabó Gábor",
+    "lat": 46.8901,
+    "lon": 19.3245,
+    "size_ha": 88,
+    "crop_type": "grape",
+    "irrigation": "none",
+    "annual_water_need_m3": 44000
+  },
+  {
+    "id": "farm_04",
+    "name": "Kiskunsági Farmház",
+    "owner": "Varga Mária",
+    "lat": 46.9512,
+    "lon": 19.5630,
+    "size_ha": 176,
+    "crop_type": "corn",
+    "irrigation": "drip",
+    "annual_water_need_m3": 123200
+  },
+  {
+    "id": "farm_05",
+    "name": "Pusztai Örökség",
+    "owner": "Fekete Zoltán",
+    "lat": 46.5214,
+    "lon": 19.5103,
+    "size_ha": 300,
+    "crop_type": "wheat",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 180000
+  },
+  {
+    "id": "farm_06",
+    "name": "Duna-menti Tanya",
+    "owner": "Horváth Péter",
+    "lat": 46.7105,
+    "lon": 19.1423,
+    "size_ha": 95,
+    "crop_type": "vegetables",
+    "irrigation": "drip",
+    "annual_water_need_m3": 76000
+  },
+  {
+    "id": "farm_07",
+    "name": "Bugaci Gazdaság",
+    "owner": "Kiss Katalin",
+    "lat": 46.6870,
+    "lon": 19.6023,
+    "size_ha": 130,
+    "crop_type": "sunflower",
+    "irrigation": "none",
+    "annual_water_need_m3": 65000
+  },
+  {
+    "id": "farm_08",
+    "name": "Soltvadkert Tanya",
+    "owner": "Tóth András",
+    "lat": 46.5732,
+    "lon": 19.3981,
+    "size_ha": 195,
+    "crop_type": "corn",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 136500
+  },
+  {
+    "id": "farm_09",
+    "name": "Keceli Homokbirtok",
+    "owner": "Molnár Judit",
+    "lat": 46.6488,
+    "lon": 19.2714,
+    "size_ha": 72,
+    "crop_type": "grape",
+    "irrigation": "drip",
+    "annual_water_need_m3": 36000
+  },
+  {
+    "id": "farm_10",
+    "name": "Zsombói Mezőgazdaság",
+    "owner": "Balogh Ferenc",
+    "lat": 46.4120,
+    "lon": 20.0534,
+    "size_ha": 250,
+    "crop_type": "wheat",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 150000
+  },
+  {
+    "id": "farm_11",
+    "name": "Felső-Homokhát Gazdaság",
+    "owner": "Papp Sándor",
+    "lat": 47.0231,
+    "lon": 19.4812,
+    "size_ha": 185,
+    "crop_type": "sunflower",
+    "irrigation": "drip",
+    "annual_water_need_m3": 111000
+  },
+  {
+    "id": "farm_12",
+    "name": "Kiskőrösi Szőlőbirtok",
+    "owner": "Farkas Ilona",
+    "lat": 46.6203,
+    "lon": 19.2891,
+    "size_ha": 60,
+    "crop_type": "grape",
+    "irrigation": "none",
+    "annual_water_need_m3": 24000
+  },
+  {
+    "id": "farm_13",
+    "name": "Kunadacs-puszta",
+    "owner": "Simon Tibor",
+    "lat": 46.9843,
+    "lon": 19.3342,
+    "size_ha": 220,
+    "crop_type": "corn",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 154000
+  },
+  {
+    "id": "farm_14",
+    "name": "Orgoványi Tanyavilág",
+    "owner": "Juhász Éva",
+    "lat": 46.8124,
+    "lon": 19.5941,
+    "size_ha": 115,
+    "crop_type": "vegetables",
+    "irrigation": "drip",
+    "annual_water_need_m3": 92000
+  },
+  {
+    "id": "farm_15",
+    "name": "Kerekegyházi Homoki Farm",
+    "owner": "Németh Béla",
+    "lat": 46.9341,
+    "lon": 19.6872,
+    "size_ha": 165,
+    "crop_type": "wheat",
+    "irrigation": "sprinkler",
+    "annual_water_need_m3": 99000
+  }
+]
